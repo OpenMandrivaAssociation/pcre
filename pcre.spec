@@ -5,11 +5,12 @@
 
 Summary: 	PCRE is a Perl-compatible regular expression library
 Name:	 	%name
-Version:	7.0
+Version:	7.1
 Release:	%mkrel 1
 License: 	BSD-Style
-Group: 		File tools
-Source:		ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
+Group:  	File tools
+Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
+Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2.sig
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL: 		http://www.pcre.org/
 Requires: 	%{libname} = %{version}
@@ -39,7 +40,6 @@ regex.h, but I didn't want to risk possible problems with existing files of
 that name by distributing it that way. To use it with an existing program that
 uses the POSIX API, it will have to be renamed or pointed at by a link.
 
-
 %package -n	%{libname}-devel
 Group:		Development/C
 Summary:	Headers and static lib for pcre development
@@ -57,11 +57,6 @@ library.
 %patch1 -p1 -b .detect_into_kdelibs
 
 %build
-# (Abel) always regen, otherwise libtool will behave in funny way
-%__libtoolize -c -f
-aclocal-1.7
-autoconf
-
 %if %mdkversion <= 810
 CFLAGS="%optflags" ./configure --prefix=%_prefix --libdir=%_libdir --mandir=%_datadir/man
 %else
@@ -93,6 +88,12 @@ mv $RPM_BUILD_ROOT/%_libdir/lib%{name}.so.%{major}.* $RPM_BUILD_ROOT/%_lib
 cd $RPM_BUILD_ROOT/%_libdir
 ln -s ../../%_lib/lib%{name}.so.%{major}.* .
 
+# Remove unwanted files
+rm -f $RPM_BUILD_ROOT/%_docdir/pcre/{AUTHORS,ChangeLog,COPYING,LICENCE,NEWS}
+rm -f $RPM_BUILD_ROOT/%_docdir/pcre/{pcre-config.txt,pcre.txt,pcregrep.txt}
+rm -f $RPM_BUILD_ROOT/%_docdir/pcre/{pcretest.txt,README}
+rm -rf $RPM_BUILD_ROOT/%_docdir/pcre/html
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -101,7 +102,6 @@ rm -rf $RPM_BUILD_ROOT
  
 %files
 %defattr(-,root,root)
-#%doc doc/pcregrep.txt doc/pcregrep.html 
 
 %_mandir/man1/pcregrep.1*
 %_mandir/man1/pcretest.1*
@@ -112,8 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 #
 %files -n %{libname}
 %defattr(-,root,root)
-%doc AUTHORS ChangeLog NEWS README NON-UNIX-USE 
-#%doc doc/pcre.txt doc/pcre.html
+%doc AUTHORS ChangeLog COPYING LICENCE NEWS README
 
 /%_lib/lib*.so.%{major}*
 %_libdir/lib*.so.%{major}*
@@ -122,8 +121,7 @@ rm -rf $RPM_BUILD_ROOT
 #
 %files -n %{libname}-devel
 %defattr(-,root,root)
-#%doc doc/pcreposix.txt doc/pcreposix.html
-#%doc doc/perltest.txt doc/pcretest.txt doc/Tech.Notes
+%doc doc/html
 
 %_libdir/lib*.a
 %_libdir/lib*.la
@@ -135,6 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 %_bindir/pcre-config
 %multiarch %{multiarch_bindir}/pcre-config
 
+%_mandir/man1/pcre-config.1*
 %_mandir/man3/*.3*
 
 
