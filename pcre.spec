@@ -68,7 +68,7 @@ CFLAGS="%optflags" ./configure --prefix=%_prefix --libdir=%_libdir --mandir=%_da
 export LC_ALL=C
 # Tests, patch out actual pcre_study_size in expected results
 echo 'int main() { printf("%d", sizeof(pcre_study_data)); return 0; }' | \
-%{__cc} -xc - -include "pcre_internal.h" -o study_size
+%{__cc} -xc - -include "pcre_internal.h" -I. -o study_size
 STUDY_SIZE=`./study_size`
 perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
 make check
