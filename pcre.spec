@@ -58,7 +58,7 @@ library.
 
 %build
 %if %mdkversion <= 810
-CFLAGS="%optflags" ./configure --prefix=%_prefix --libdir=%_libdir --mandir=%_datadir/man
+CFLAGS="%optflags" ./configure --prefix=%_prefix --libdir=%_libdir --mandir=%_mandir
 %else
 %configure2_5x --enable-utf8
 %endif
