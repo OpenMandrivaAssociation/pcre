@@ -2,10 +2,11 @@
 %define major 0
 %define libname_orig	lib%{name}
 %define libname	%mklibname pcre %{major}
+%define develname %mklibname -d pcre
 
 Summary: 	PCRE is a Perl-compatible regular expression library
 Name:	 	%name
-Version:	7.2
+Version:	7.3
 Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
@@ -14,7 +15,7 @@ Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.ta
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL: 		http://www.pcre.org/
 Requires: 	%{libname} = %{version}
-BuildRequires:	automake1.7
+BuildRequires:	automake
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 
 %description
@@ -40,15 +41,16 @@ regex.h, but I didn't want to risk possible problems with existing files of
 that name by distributing it that way. To use it with an existing program that
 uses the POSIX API, it will have to be renamed or pointed at by a link.
 
-%package -n	%{libname}-devel
+%package -n	%{develname}
 Group:		Development/C
 Summary:	Headers and static lib for pcre development
 Requires:	%{libname} = %{version}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
+Obsoletes:	%libname-devel
 Conflicts:	pcre <= 4.0
 
-%description -n	%{libname}-devel
+%description -n	%{develname}
 Install this package if you want do compile applications using the pcre
 library.
 
@@ -67,10 +69,10 @@ CFLAGS="%optflags" ./configure --prefix=%_prefix --libdir=%_libdir --mandir=%_ma
 %check
 export LC_ALL=C
 # Tests, patch out actual pcre_study_size in expected results
-echo 'int main() { printf("%d", sizeof(pcre_study_data)); return 0; }' | \
-%{__cc} -xc - -include "pcre_internal.h" -I. -o study_size
-STUDY_SIZE=`./study_size`
-perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
+#echo 'int main() { printf("%d", sizeof(pcre_study_data)); return 0; }' | \
+#%{__cc} -xc - -include "pcre_internal.h" -I. -o study_size
+#STUDY_SIZE=`./study_size`
+#perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
 make check
 
 %install
@@ -119,7 +121,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 #
-%files -n %{libname}-devel
+%files -n %{develname}
 %defattr(-,root,root)
 %doc doc/html
 
@@ -135,5 +137,3 @@ rm -rf $RPM_BUILD_ROOT
 
 %_mandir/man1/pcre-config.1*
 %_mandir/man3/*.3*
-
-
