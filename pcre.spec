@@ -7,14 +7,14 @@
 Summary: 	PCRE is a Perl-compatible regular expression library
 Name:	 	%name
 Version:	7.4
-Release:	%mkrel 1
+Release:	%mkrel 2
 License: 	BSD-Style
 Group:  	File tools
 Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
 Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2.sig
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL: 		http://www.pcre.org/
-Requires: 	%{libname} = %{version}
+Requires: 	%{libname} = %{version}-%{release}
 BuildRequires:	automake
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 
@@ -44,10 +44,10 @@ uses the POSIX API, it will have to be renamed or pointed at by a link.
 %package -n	%{develname}
 Group:		Development/C
 Summary:	Headers and static lib for pcre development
-Requires:	%{libname} = %{version}
+Requires:	%{libname} = %{version}-%{release}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
-Obsoletes:	%libname-devel
+Obsoletes:	%mklibname pcre 0 -d
 Conflicts:	pcre <= 4.0
 
 %description -n	%{develname}
@@ -59,11 +59,7 @@ library.
 %patch1 -p1 -b .detect_into_kdelibs
 
 %build
-%if %mdkversion <= 810
-CFLAGS="%optflags" ./configure --prefix=%_prefix --libdir=%_libdir --mandir=%_mandir
-%else
 %configure2_5x --enable-utf8
-%endif
 %make
 
 %check
@@ -77,11 +73,7 @@ make check
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%if %mdkversion <= 810
-make DESTDIR=$RPM_BUILD_ROOT install
-%else
 %makeinstall_std
-%endif
 
 %multiarch_binaries $RPM_BUILD_ROOT%{_bindir}/pcre-config
 
