@@ -12,6 +12,7 @@ License: 	BSD-Style
 Group:  	File tools
 Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
 Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2.sig
+BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL: 		http://www.pcre.org/
 Requires: 	%{libname} = %{version}-%{release}
 BuildRequires:	automake
