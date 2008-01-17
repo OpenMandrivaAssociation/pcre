@@ -7,7 +7,7 @@
 Summary: 	PCRE is a Perl-compatible regular expression library
 Name:	 	%name
 Version:	7.5
-Release:	%mkrel 1
+Release:	%mkrel 2
 License: 	BSD-Style
 Group:  	File tools
 Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
@@ -106,7 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 #
 %files -n %{libname}
 %defattr(-,root,root)
-%doc AUTHORS ChangeLog COPYING LICENCE NEWS README
+%doc AUTHORS COPYING LICENCE NEWS README
 
 /%_lib/lib*.so.%{major}*
 %_libdir/lib*.so.%{major}*
@@ -116,6 +116,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %{develname}
 %defattr(-,root,root)
 %doc doc/html
+%doc ChangeLog 
 
 %_libdir/lib*.a
 %_libdir/lib*.la
