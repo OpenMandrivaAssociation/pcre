@@ -4,7 +4,7 @@
 %define libname	%mklibname pcre %{major}
 %define develname %mklibname -d pcre
 
-Summary: 	PCRE is a Perl-compatible regular expression library
+Summary: 	Perl-compatible regular expression library
 Name:	 	%name
 Version:	7.6
 Release:	%mkrel 1
@@ -27,7 +27,7 @@ This package contains a grep variant based on the PCRE library.
 
 %package -n	%{libname}
 Group:		System/Libraries
-Summary:	PCRE is a Perl-compatible regular expression library
+Summary:	Perl-compatible regular expression library
 Provides:	%{libname_orig} = %{version}-%{release}
 Conflicts:	pcre <= 4.0
 
