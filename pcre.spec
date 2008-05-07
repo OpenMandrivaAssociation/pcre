@@ -1,22 +1,21 @@
-%define name pcre
 %define major 0
 %define libname_orig	lib%{name}
 %define libname	%mklibname pcre %{major}
 %define develname %mklibname -d pcre
 
 Summary: 	Perl-compatible regular expression library
-Name:	 	%name
-Version:	7.6
-Release:	%mkrel 2
+Name:	 	pcre
+Version:	7.7
+Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
-Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
-Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2.sig
-BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL: 		http://www.pcre.org/
+Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.gz
+Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.gz.sig
 Requires: 	%{libname} = %{version}-%{release}
 BuildRequires:	automake
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
+BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
