@@ -16,6 +16,7 @@ Requires: 	%{libname} = %{version}-%{release}
 BuildRequires:	automake
 Patch0:		pcre-7.6-CVE-2008-2371.patch
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
+Patch2:		pcre-linkage_fix.diff
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -58,8 +59,10 @@ library.
 %setup -q
 %patch0 -p1 -b .cve-2008-2371
 %patch1 -p1 -b .detect_into_kdelibs
+%patch2 -p0
 
 %build
+autoreconf -fis
 %configure2_5x --enable-utf8 --enable-unicode-properties
 %make
 
