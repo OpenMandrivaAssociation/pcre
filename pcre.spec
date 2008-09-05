@@ -5,16 +5,15 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	7.7
-Release:	%mkrel 2
+Version:	7.8
+Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
-Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.gz
-Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.gz.sig
+Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
+Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2.sig
 Requires: 	%{libname} = %{version}-%{release}
 BuildRequires:	automake
-Patch0:		pcre-7.6-CVE-2008-2371.patch
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch2:		pcre-linkage_fix.diff
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -57,7 +56,6 @@ library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .cve-2008-2371
 %patch1 -p1 -b .detect_into_kdelibs
 %patch2 -p0
 
