@@ -6,7 +6,7 @@
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	7.8
-Release:	%mkrel 1
+Release:	%mkrel 2
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -16,6 +16,7 @@ Requires: 	%{libname} = %{version}-%{release}
 BuildRequires:	automake
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch2:		pcre-linkage_fix.diff
+Patch3:		pcre-7.8-format_not_a_string_literal_and_no_format_arguments.diff
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -58,6 +59,7 @@ library.
 %setup -q
 %patch1 -p1 -b .detect_into_kdelibs
 %patch2 -p0
+%patch3 -p0 -b .format_not_a_string_literal_and_no_format_arguments
 
 %build
 autoreconf -fis
