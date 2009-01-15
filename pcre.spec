@@ -1,12 +1,15 @@
 %define major 0
+%define pcreposix_major 1
 %define libname_orig	lib%{name}
 %define libname	%mklibname pcre %{major}
 %define develname %mklibname -d pcre
 
+%define build_pcreposix_compat 1
+
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	7.8
-Release:	%mkrel 2
+Release:	%mkrel 3
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -17,6 +20,8 @@ BuildRequires:	automake
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch2:		pcre-linkage_fix.diff
 Patch3:		pcre-7.8-format_not_a_string_literal_and_no_format_arguments.diff
+# from debian:
+Patch4:		pcre-pcreposix-glibc-conflict.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -61,10 +66,27 @@ library.
 %patch2 -p0
 %patch3 -p0 -b .format_not_a_string_literal_and_no_format_arguments
 
+
+%if %{build_pcreposix_compat}
+  # pcre-pcreposix-glibc-conflict patch below breaks compatibility,
+  # create a libpcreposix.so.0 without the patch
+  cp -a . ../pcre-with-pcreposix_compat && mv ../pcre-with-pcreposix_compat .
+%endif
+%patch4 -p1 -b .symbol-conflict
+
 %build
-autoreconf -fis
-%configure2_5x --enable-utf8 --enable-unicode-properties
-%make
+%if %{build_pcreposix_compat}
+dirs="pcre-with-pcreposix_compat ."
+%else
+dirs="."
+%endif
+for i in $dirs; do
+  cd $i
+  autoreconf -fis
+  %configure2_5x --enable-utf8 --enable-unicode-properties
+  %make
+  cd -
+done
 
 %check
 export LC_ALL=C
@@ -77,6 +99,9 @@ make check
 
 %install
 rm -rf $RPM_BUILD_ROOT
+%if %{build_pcreposix_compat}
+%makeinstall_std -C pcre-with-pcreposix_compat
+%endif
 %makeinstall_std
 
 %multiarch_binaries $RPM_BUILD_ROOT%{_bindir}/pcre-config
@@ -118,6 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 
 /%_lib/lib*.so.%{major}*
 %_libdir/lib*.so.%{major}*
+%_libdir/libpcreposix.so.%{pcreposix_major}*
 
 
 #
