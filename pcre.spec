@@ -8,8 +8,8 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	7.8
-Release:	%mkrel 3
+Version:	7.9
+Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -61,6 +61,7 @@ Install this package if you want do compile applications using the pcre
 library.
 
 %prep
+
 %setup -q
 %patch1 -p1 -b .detect_into_kdelibs
 %patch2 -p0
