@@ -159,6 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir/*.h
 %_libdir/pkgconfig/libpcre.pc
 %_libdir/pkgconfig/libpcrecpp.pc
+%_libdir/pkgconfig/libpcreposix.pc
 
 %_bindir/pcre-config
 %multiarch %{multiarch_bindir}/pcre-config
