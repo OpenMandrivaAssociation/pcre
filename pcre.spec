@@ -8,7 +8,7 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	7.9
+Version:	8.00
 Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
