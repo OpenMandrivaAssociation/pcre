@@ -8,7 +8,7 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	8.00
+Version:	8.01
 Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
@@ -83,6 +83,7 @@ dirs="."
 %endif
 for i in $dirs; do
   cd $i
+  mkdir -p m4
   autoreconf -fis
   %configure2_5x --enable-utf8 --enable-unicode-properties
   %make
