@@ -8,7 +8,7 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	8.02
+Version:	8.10
 Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
@@ -65,7 +65,7 @@ library.
 %setup -q
 %patch1 -p1 -b .detect_into_kdelibs
 %patch2 -p0
-%patch3 -p0 -b .format_not_a_string_literal_and_no_format_arguments
+#%patch3 -p0 -b .format_not_a_string_literal_and_no_format_arguments
 
 
 %if %{build_pcreposix_compat}
