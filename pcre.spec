@@ -9,7 +9,7 @@
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	8.12
-Release:	%mkrel 1
+Release:	%mkrel 2
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -163,7 +163,7 @@ rm -rf $RPM_BUILD_ROOT
 %_libdir/pkgconfig/libpcreposix.pc
 
 %_bindir/pcre-config
-%multiarch %{multiarch_bindir}/pcre-config
+%{multiarch_bindir}/pcre-config
 
 %_mandir/man1/pcre-config.1*
 %_mandir/man3/*.3*
