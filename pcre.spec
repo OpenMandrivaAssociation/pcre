@@ -8,7 +8,7 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	8.13
+Version:	8.20
 Release:	%mkrel 1
 License: 	BSD-Style
 Group:  	File tools
@@ -19,7 +19,6 @@ Requires: 	%{libname} = %{version}-%{release}
 BuildRequires:	automake
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch2:		pcre-linkage_fix.diff
-Patch3:		pcre-7.8-format_not_a_string_literal_and_no_format_arguments.diff
 # from debian:
 Patch4:		pcre-pcreposix-glibc-conflict.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -65,8 +64,6 @@ library.
 %setup -q
 %patch1 -p1 -b .detect_into_kdelibs
 %patch2 -p0
-#%patch3 -p0 -b .format_not_a_string_literal_and_no_format_arguments
-
 
 %if %{build_pcreposix_compat}
   # pcre-pcreposix-glibc-conflict patch below breaks compatibility,
@@ -85,7 +82,7 @@ for i in $dirs; do
   cd $i
   mkdir -p m4
   autoreconf -fis
-  %configure2_5x --enable-utf8 --enable-unicode-properties
+  %configure2_5x --enable-utf8 --enable-unicode-properties --enable-jit
   %make
   cd -
 done
@@ -101,6 +98,7 @@ make check
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
 %if %{build_pcreposix_compat}
 %makeinstall_std -C pcre-with-pcreposix_compat
 %endif
@@ -122,38 +120,24 @@ rm -rf $RPM_BUILD_ROOT/%_docdir/pcre/html
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
- 
 %files
 %defattr(-,root,root)
-
 %_mandir/man1/pcregrep.1*
 %_mandir/man1/pcretest.1*
 %_bindir/pcregrep  
 %_bindir/pcretest
 
-
-#
 %files -n %{libname}
 %defattr(-,root,root)
 %doc AUTHORS COPYING LICENCE NEWS README
-
 /%_lib/lib*.so.%{major}*
 %_libdir/lib*.so.%{major}*
 %_libdir/libpcreposix.so.%{pcreposix_major}*
 
-
-#
 %files -n %{develname}
 %defattr(-,root,root)
 %doc doc/html
 %doc ChangeLog 
-
 %_libdir/lib*.a
 %_libdir/lib*.la
 %_libdir/lib*.so
