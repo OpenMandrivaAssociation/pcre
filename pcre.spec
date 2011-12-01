@@ -97,28 +97,28 @@ export LC_ALL=C
 make check
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %if %{build_pcreposix_compat}
 %makeinstall_std -C pcre-with-pcreposix_compat
 %endif
 %makeinstall_std
 
-%multiarch_binaries $RPM_BUILD_ROOT%{_bindir}/pcre-config
+%multiarch_binaries %{buildroot}%{_bindir}/pcre-config
 
-mkdir -p $RPM_BUILD_ROOT/%_lib
-mv $RPM_BUILD_ROOT/%_libdir/lib%{name}.so.%{major}.* $RPM_BUILD_ROOT/%_lib
-cd $RPM_BUILD_ROOT/%_libdir
+mkdir -p %{buildroot}/%_lib
+mv %{buildroot}/%_libdir/lib%{name}.so.%{major}.* %{buildroot}/%_lib
+cd %{buildroot}/%_libdir
 ln -s ../../%_lib/lib%{name}.so.%{major}.* .
 
 # Remove unwanted files
-rm -f $RPM_BUILD_ROOT/%_docdir/pcre/{AUTHORS,ChangeLog,COPYING,LICENCE,NEWS}
-rm -f $RPM_BUILD_ROOT/%_docdir/pcre/{pcre-config.txt,pcre.txt,pcregrep.txt}
-rm -f $RPM_BUILD_ROOT/%_docdir/pcre/{pcretest.txt,README}
-rm -rf $RPM_BUILD_ROOT/%_docdir/pcre/html
+rm -f %{buildroot}/%_docdir/pcre/{AUTHORS,ChangeLog,COPYING,LICENCE,NEWS}
+rm -f %{buildroot}/%_docdir/pcre/{pcre-config.txt,pcre.txt,pcregrep.txt}
+rm -f %{buildroot}/%_docdir/pcre/{pcretest.txt,README}
+rm -rf %{buildroot}/%_docdir/pcre/html
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
