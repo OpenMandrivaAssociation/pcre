@@ -9,7 +9,7 @@
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	8.20
-Release:	%mkrel 1
+Release:	2
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -21,7 +21,6 @@ Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch2:		pcre-linkage_fix.diff
 # from debian:
 Patch4:		pcre-pcreposix-glibc-conflict.patch
-BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
@@ -49,7 +48,7 @@ uses the POSIX API, it will have to be renamed or pointed at by a link.
 %package -n	%{develname}
 Group:		Development/C
 Summary:	Headers and static lib for pcre development
-Requires:	%{libname} = %{version}-%{release}
+Requires:	%{libname} >= %{version}-%{release}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Obsoletes:	%mklibname pcre 0 -d
@@ -117,29 +116,24 @@ rm -f %{buildroot}/%_docdir/pcre/{pcre-config.txt,pcre.txt,pcregrep.txt}
 rm -f %{buildroot}/%_docdir/pcre/{pcretest.txt,README}
 rm -rf %{buildroot}/%_docdir/pcre/html
 
-%clean
-rm -rf %{buildroot}
+# cleanup
+rm -f %{buildroot}%{_libdir}/*.*a
 
 %files
-%defattr(-,root,root)
 %_mandir/man1/pcregrep.1*
 %_mandir/man1/pcretest.1*
 %_bindir/pcregrep  
 %_bindir/pcretest
 
 %files -n %{libname}
-%defattr(-,root,root)
 %doc AUTHORS COPYING LICENCE NEWS README
 /%_lib/lib*.so.%{major}*
 %_libdir/lib*.so.%{major}*
 %_libdir/libpcreposix.so.%{pcreposix_major}*
 
 %files -n %{develname}
-%defattr(-,root,root)
 %doc doc/html
 %doc ChangeLog 
-%_libdir/lib*.a
-%_libdir/lib*.la
 %_libdir/lib*.so
 %_includedir/*.h
 %_libdir/pkgconfig/libpcre.pc
