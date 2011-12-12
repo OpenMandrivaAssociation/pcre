@@ -8,8 +8,8 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	8.20
-Release:	2
+Version:	8.21
+Release:	1
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
