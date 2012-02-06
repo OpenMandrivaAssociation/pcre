@@ -11,7 +11,7 @@
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	8.30
-Release:	1.1
+Release:	1.2
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -51,7 +51,7 @@ uses the POSIX API, it will have to be renamed or pointed at by a link.
 %package -n	%{develname}
 Group:		Development/C
 Summary:	Headers and static lib for pcre development
-Requires:	%{libname} >= %{version}-%{release}
+Requires:	%{libname} = %{version}-%{release}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Obsoletes:	%mklibname pcre 0 -d
