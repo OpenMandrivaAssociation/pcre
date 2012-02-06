@@ -1,15 +1,17 @@
 %define pcre_major 1
 %define pcre16_major 0
 %define pcrecpp_major 0
-%define pcreposix_major 0
+%define pcreposix_major 1
 %define libname_orig lib%{name}
 %define libname	%mklibname pcre %{pcre_major}
 %define develname %mklibname -d pcre
 
+%define build_pcreposix_compat 1
+
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	8.30
-Release:	1
+Release:	1.1
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -20,6 +22,8 @@ BuildRequires:	autoconf automake libtool
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch2:		pcre-linkage_fix.diff
 Patch3:		pcre-8.30-no_multiarch.diff
+# from debian:
+Patch4:		pcre-pcreposix-glibc-conflict.patch
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
@@ -32,6 +36,7 @@ This package contains a grep variant based on the PCRE library.
 Group:		System/Libraries
 Summary:	Perl-compatible regular expression library
 Provides:	%{libname_orig} = %{version}-%{release}
+Conflicts:	%{mklibname pcre 0}
 
 %description -n	%{libname}
 PCRE has its own native API, but a set of "wrapper" functions that are based on
@@ -65,16 +70,28 @@ library.
 # bork
 perl -pi -e "s|ln -s|ln -snf|g" Makefile.am
 
-%build
-mkdir -p m4
-autoreconf -fi
-%configure2_5x \
-    --enable-utf \
-    --enable-pcre16 \
-    --enable-unicode-properties \
-    --enable-jit
+%if %{build_pcreposix_compat}
+  # pcre-pcreposix-glibc-conflict patch below breaks compatibility,
+  # create a libpcreposix.so.0 without the patch
+  cp -a . ../pcre-with-pcreposix_compat && mv ../pcre-with-pcreposix_compat .
+%endif
+%patch4 -p1 -b .symbol-conflict
 
-%make
+%build
+
+%if %{build_pcreposix_compat}
+dirs="pcre-with-pcreposix_compat ."
+%else
+dirs="."
+%endif
+for i in $dirs; do
+  cd $i
+  mkdir -p m4
+  autoreconf -fi
+  %configure2_5x --enable-utf --enable-pcre16 --enable-unicode-properties --enable-jit
+  %make
+  cd -
+done
 
 %check
 export LC_ALL=C
@@ -88,6 +105,9 @@ make check
 %install
 rm -rf %{buildroot}
 
+%if %{build_pcreposix_compat}
+%makeinstall_std -C pcre-with-pcreposix_compat
+%endif
 %makeinstall_std
 
 install -d %{buildroot}/%{_lib}
@@ -115,6 +135,7 @@ rm -f %{buildroot}%{_libdir}/*.*a
 %{_libdir}/libpcre16.so.%{pcre16_major}*
 %{_libdir}/libpcrecpp.so.%{pcrecpp_major}*
 %{_libdir}/libpcreposix.so.%{pcreposix_major}*
+%{_libdir}/libpcreposix.so.0*
 
 %files -n %{develname}
 %doc doc/html ChangeLog
