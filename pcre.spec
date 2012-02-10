@@ -17,7 +17,7 @@
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	8.30
-Release:	3
+Release:	4
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -42,7 +42,6 @@ This package contains a grep variant based on the PCRE library.
 Group:		System/Libraries
 Summary:	Perl-compatible regular expression library
 Provides:	%{libname_orig} = %{version}-%{release}
-Conflicts:	%{mklibname pcre 0}
 
 %description -n	%{libname}
 This package contains the shared library libpcre.
