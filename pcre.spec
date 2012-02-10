@@ -1,9 +1,15 @@
 %define pcre_major 1
 %define pcre16_major 0
 %define pcrecpp_major 0
-%define pcreposix_major 1
+%define pcreposix1_major 1
+%define pcreposix0_major 0
+
 %define libname_orig lib%{name}
-%define libname	%mklibname pcre %{pcre_major}
+%define libname		%mklibname pcre %{pcre_major}
+%define libname16	%mklibname pcre16_ %{pcre16_major}
+%define libnamecpp	%mklibname pcrecpp %{pcrecpp_major}
+%define libnameposix1	%mklibname pcreposix %{pcreposix1_major}
+%define libnameposix0	%mklibname pcreposix %{pcreposix0_major}
 %define develname %mklibname -d pcre
 
 %define build_pcreposix_compat 1
@@ -11,7 +17,7 @@
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	8.30
-Release:	2
+Release:	3
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -39,19 +45,48 @@ Provides:	%{libname_orig} = %{version}-%{release}
 Conflicts:	%{mklibname pcre 0}
 
 %description -n	%{libname}
-PCRE has its own native API, but a set of "wrapper" functions that are based on
-the POSIX API are also supplied in the library libpcreposix. Note that this
-just provides a POSIX calling interface to PCRE: the regular expressions
-themselves still follow Perl syntax and semantics. The header file
-for the POSIX-style functions is called pcreposix.h. The official POSIX name is
-regex.h, but I didn't want to risk possible problems with existing files of
-that name by distributing it that way. To use it with an existing program that
-uses the POSIX API, it will have to be renamed or pointed at by a link.
+This package contains the shared library libpcre.
+
+%package -n	%{libname16}
+Group:		System/Libraries
+Summary:	Perl-compatible regular expression library
+Conflicts:	%{_lib}pcre1 < 8.30-3
+
+%description -n	%{libname16}
+This package contains the shared library libpcre16.
+
+%package -n	%{libnamecpp}
+Group:		System/Libraries
+Summary:	Perl-compatible regular expression library
+Conflicts:	%{_lib}pcre1 < 8.30-3
+
+%description -n	%{libnamecpp}
+This package contains the shared library libpcrecpp.
+
+%package -n	%{libnameposix1}
+Group:		System/Libraries
+Summary:	Perl-compatible regular expression library
+Conflicts:	%{_lib}pcre1 < 8.30-3
+
+%description -n	%{libnameposix1}
+This package contains the shared library libpcreposix.
+
+%package -n	%{libnameposix0}
+Group:		System/Libraries
+Summary:	Perl-compatible regular expression library
+Conflicts:	%{_lib}pcre1 < 8.30-3
+
+%description -n	%{libnameposix0}
+This package contains the shared library libpcreposix compat.
 
 %package -n	%{develname}
 Group:		Development/C
 Summary:	Headers and static lib for pcre development
 Requires:	%{libname} = %{version}-%{release}
+Requires:	%{libname16} = %{version}-%{release}
+Requires:	%{libnamecpp} = %{version}-%{release}
+Requires:	%{libnameposix1} = %{version}-%{release}
+Requires:	%{libnameposix0} = %{version}-%{release}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Obsoletes:	%mklibname pcre 0 -d
@@ -60,8 +95,13 @@ Obsoletes:	%mklibname pcre 0 -d
 Install this package if you want do compile applications using the pcre
 library.
 
-%prep
+The header file for the POSIX-style functions is called pcreposix.h. The 
+official POSIX name is regex.h, but I didn't want to risk possible problems 
+with existing files of that name by distributing it that way. To use it with an
+existing program that uses the POSIX API, it will have to be renamed or pointed
+at by a link.
 
+%prep
 %setup -q
 %patch1 -p1 -b .detect_into_kdelibs
 %patch2 -p0
@@ -88,7 +128,12 @@ for i in $dirs; do
   cd $i
   mkdir -p m4
   autoreconf -fi
-  %configure2_5x --enable-utf --enable-pcre16 --enable-unicode-properties --enable-jit
+  %configure2_5x \
+	--disable-static \
+	--enable-utf \
+	--enable-pcre16 \
+	--enable-unicode-properties \
+	--enable-jit
   %make
   cd -
 done
@@ -119,23 +164,32 @@ popd
 # Remove unwanted files
 rm -rf %{buildroot}%{_docdir}/pcre*
 
+# better to just disable static
 # cleanup
-rm -f %{buildroot}%{_libdir}/*.*a
+#rm -f %{buildroot}%{_libdir}/*.*a
 
 %files
+%doc AUTHORS COPYING LICENCE NEWS README
 %{_bindir}/pcregrep
 %{_bindir}/pcretest
 %{_mandir}/man1/pcregrep.1*
 %{_mandir}/man1/pcretest.1*
 
 %files -n %{libname}
-%doc AUTHORS COPYING LICENCE NEWS README
 /%{_lib}/libpcre.so.%{pcre_major}*
 %{_libdir}/libpcre.so.%{pcre_major}*
+
+%files -n %{libname16}
 %{_libdir}/libpcre16.so.%{pcre16_major}*
+
+%files -n %{libnamecpp}
 %{_libdir}/libpcrecpp.so.%{pcrecpp_major}*
-%{_libdir}/libpcreposix.so.%{pcreposix_major}*
-%{_libdir}/libpcreposix.so.0*
+
+%files -n %{libnameposix1}
+%{_libdir}/libpcreposix.so.%{pcreposix1_major}*
+
+%files -n %{libnameposix0}
+%{_libdir}/libpcreposix.so.%{pcreposix0_major}*
 
 %files -n %{develname}
 %doc doc/html ChangeLog
