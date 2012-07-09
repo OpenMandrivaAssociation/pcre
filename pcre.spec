@@ -16,8 +16,8 @@
 
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
-Version:	8.30
-Release:	4
+Version:	8.31
+Release:	1
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -165,7 +165,7 @@ rm -rf %{buildroot}%{_docdir}/pcre*
 
 # better to just disable static
 # cleanup
-#rm -f %{buildroot}%{_libdir}/*.*a
+rm -f %{buildroot}%{_libdir}/*.*a
 
 %files
 %doc AUTHORS COPYING LICENCE NEWS README
