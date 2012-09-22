@@ -17,7 +17,7 @@
 Summary: 	Perl-compatible regular expression library
 Name:	 	pcre
 Version:	8.31
-Release:	1
+Release:	2
 License: 	BSD-Style
 Group:  	File tools
 URL: 		http://www.pcre.org/
@@ -155,10 +155,8 @@ rm -rf %{buildroot}
 %makeinstall_std
 
 install -d %{buildroot}/%{_lib}
-mv %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.* %{buildroot}/%{_lib}/
-pushd %{buildroot}%{_libdir}
-    ln -s ../../%{_lib}/lib%{name}.so.%{pcre_major}.* .
-popd
+mv %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}* %{buildroot}/%{_lib}/
+ln -srf %{buildroot}/%{_lib}/libpcre.so.%{pcre_major}.*.* %{buildroot}%{_libdir}/libpcre.so
 
 # Remove unwanted files
 rm -rf %{buildroot}%{_docdir}/pcre*
@@ -176,7 +174,6 @@ rm -f %{buildroot}%{_libdir}/*.*a
 
 %files -n %{libname}
 /%{_lib}/libpcre.so.%{pcre_major}*
-%{_libdir}/libpcre.so.%{pcre_major}*
 
 %files -n %{libname16}
 %{_libdir}/libpcre16.so.%{pcre16_major}*
