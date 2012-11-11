@@ -1,0 +1,57 @@
+--- pcre-config.in	2012-01-21 17:00:28.000000000 +0100
++++ pcre-config.in.oden	2012-02-05 14:32:55.793812109 +0100
+@@ -28,21 +28,6 @@
+       exit 1
+ fi
+ 
+-libR=
+-case `uname -s` in
+-  *SunOS*)
+-  libR=" -R@libdir@"
+-  ;;
+-  *BSD*)
+-  libR=" -Wl,-R@libdir@"
+-  ;;
+-esac
+-
+-libS=
+-if test @libdir@ != /usr/lib ; then
+-  libS=-L@libdir@
+-fi
+-
+ while test $# -gt 0; do
+   case "$1" in
+   -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+@@ -87,28 +72,28 @@
+       ;;
+     --libs-posix)
+       if test @enable_pcre8@ = yes ; then
+-        echo $libS$libR -lpcreposix -lpcre
++        echo "-lpcreposix -lpcre"
+       else
+         echo "${usage}" 1>&2
+       fi
+       ;;
+     --libs)
+       if test @enable_pcre8@ = yes ; then
+-        echo $libS$libR -lpcre
++        echo "-lpcre"
+       else
+         echo "${usage}" 1>&2
+       fi
+       ;;
+     --libs16)
+       if test @enable_pcre16@ = yes ; then
+-        echo $libS$libR -lpcre16
++        echo "-lpcre16"
+       else
+         echo "${usage}" 1>&2
+       fi
+       ;;
+     --libs-cpp)
+       if test @enable_cpp@ = yes ; then
+-        echo $libS$libR -lpcrecpp -lpcre
++        echo "-lpcrecpp -lpcre"
+       else
+         echo "${usage}" 1>&2
+       fi
