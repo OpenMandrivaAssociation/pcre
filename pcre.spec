@@ -40,7 +40,6 @@ This package contains a grep variant based on the PCRE library.
 %package -n	%{libname}
 Group:		System/Libraries
 Summary:	Perl-compatible regular expression library
-Provides:	%{libname_orig} = %{version}-%{release}
 
 %description -n	%{libname}
 This package contains the shared library libpcre.
