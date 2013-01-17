@@ -4,7 +4,6 @@
 %define pcreposix1_major 1
 %define pcreposix0_major 0
 
-%define libname_orig lib%{name}
 %define libname		%mklibname pcre %{pcre_major}
 %define libname16	%mklibname pcre16_ %{pcre16_major}
 %define libnamecpp	%mklibname pcrecpp %{pcrecpp_major}
@@ -85,7 +84,6 @@ Requires:	%{libname16} = %{version}-%{release}
 Requires:	%{libnamecpp} = %{version}-%{release}
 Requires:	%{libnameposix1} = %{version}-%{release}
 Requires:	%{libnameposix0} = %{version}-%{release}
-Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Obsoletes:	%{mklibname pcre 0 -d} < 8.31
 
