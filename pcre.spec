@@ -17,7 +17,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.32
-Release:	1
+Release:	2
 License:	BSD-Style
 Group:		File tools
 URL:		http://www.pcre.org/
@@ -152,10 +152,10 @@ make check
 %makeinstall_std
 
 install -d %{buildroot}/%{_lib}
-mv %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.* %{buildroot}/%{_lib}/
-pushd %{buildroot}%{_libdir}
-    ln -s ../../%{_lib}/lib%{name}.so.%{pcre_major}.* .
-popd
+mv %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.* %{buildroot}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libpcre.so.%{pcre_major}.*.* %{buildroot}%{_libdir}/libpcre.so
+mv %{buildroot}%{_libdir}/libpcreposix.so.%{pcreposix1_major}.* %{buildroot}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libpcreposix.so.%{pcreposix1_major}.*.* %{buildroot}%{_libdir}/libpcreposix.so
 
 # Remove unwanted files
 rm -rf %{buildroot}%{_docdir}/pcre*
@@ -169,7 +169,6 @@ rm -rf %{buildroot}%{_docdir}/pcre*
 
 %files -n %{libname}
 /%{_lib}/libpcre.so.%{pcre_major}*
-%{_libdir}/libpcre.so.%{pcre_major}*
 
 %files -n %{libname16}
 %{_libdir}/libpcre16.so.%{pcre16_major}*
@@ -178,7 +177,7 @@ rm -rf %{buildroot}%{_docdir}/pcre*
 %{_libdir}/libpcrecpp.so.%{pcrecpp_major}*
 
 %files -n %{libnameposix1}
-%{_libdir}/libpcreposix.so.%{pcreposix1_major}*
+/%{_lib}/libpcreposix.so.%{pcreposix1_major}*
 
 %files -n %{libnameposix0}
 %{_libdir}/libpcreposix.so.%{pcreposix0_major}*
@@ -196,6 +195,9 @@ rm -rf %{buildroot}%{_docdir}/pcre*
 %{_mandir}/man3/*.3*
 
 %changelog
+* Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.31-2
+- move libpcreposix.so.1 under /%%{_lib} as it's required by /bin/rpm
+
 * Mon Jul 09 2012 Oden Eriksson <oeriksson@mandriva.com> 8.31-1
 + Revision: 808561
 - 8.31
