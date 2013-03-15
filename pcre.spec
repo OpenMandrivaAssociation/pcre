@@ -125,10 +125,12 @@ for i in $dirs; do
   autoreconf -fi
   %configure2_5x \
 	--disable-static \
+%ifarch %ix86 x86_64 %arm ppc ppc64 mips
+	--enable-jit \
+%endif
 	--enable-utf \
 	--enable-pcre16 \
-	--enable-unicode-properties \
-	--enable-jit
+	--enable-unicode-properties
   %make
   cd -
 done
