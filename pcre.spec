@@ -12,6 +12,7 @@
 %define develname %mklibname -d pcre
 
 %define build_pcreposix_compat 1
+%bcond_with	crosscompile
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
@@ -149,6 +150,11 @@ make check
 
 install -d %{buildroot}/%{_lib}
 mv %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.* %{buildroot}/%{_lib}
+# strange thing 
+# see https://issues.openmandriva.org/show_bug.cgi?id=389
+%if %{with crosscompile}
+ln -srf %{buildroot}/%{_lib}/libpcre.so.%{pcre_major}.*.* %{buildroot}/%{_lib}/libpcre.so.1
+%endif
 ln -srf %{buildroot}/%{_lib}/libpcre.so.%{pcre_major}.*.* %{buildroot}%{_libdir}/libpcre.so
 mv %{buildroot}%{_libdir}/libpcreposix.so.%{pcreposix1_major}.* %{buildroot}/%{_lib}
 ln -srf %{buildroot}/%{_lib}/libpcreposix.so.%{pcreposix1_major}.*.* %{buildroot}%{_libdir}/libpcreposix.so
