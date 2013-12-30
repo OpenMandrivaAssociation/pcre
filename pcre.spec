@@ -10,14 +10,15 @@
 %define libnameposix1	%mklibname pcreposix %{pcreposix1_major}
 %define libnameposix0	%mklibname pcreposix %{pcreposix0_major}
 %define develname %mklibname -d pcre
+%define staticname %mklibname -s -d pcre
 
 %define build_pcreposix_compat 1
 %bcond_with	crosscompile
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.33
-Release:	5
+Version:	8.34
+Release:	1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -78,7 +79,7 @@ This package contains the shared library libpcreposix compat.
 
 %package -n	%{develname}
 Group:		Development/C
-Summary:	Headers and static lib for pcre development
+Summary:	Headers for pcre development
 Requires:	%{libname} = %{version}-%{release}
 Requires:	%{libname16} = %{version}-%{release}
 Requires:	%{libnamecpp} = %{version}-%{release}
@@ -95,6 +96,14 @@ official POSIX name is regex.h, but I didn't want to risk possible problems
 with existing files of that name by distributing it that way. To use it with an
 existing program that uses the POSIX API, it will have to be renamed or pointed
 at by a link.
+
+%package -n	%{staticname}
+Group:		Development/C
+Summary:	Library file for linking statically to PCRE
+Requires:	%{develname} = %{EVRD}
+
+%description -n	%{staticname}
+Library file for linking statically to PCRE
 
 %prep
 %setup -q
@@ -121,8 +130,10 @@ for i in $dirs; do
   cd $i
   mkdir -p m4
   autoreconf -fi
+  # The static lib is needed for qemu-static-* targets.
+  # Please don't remove it.
   %configure2_5x \
-	--disable-static \
+	--enable-static \
 %ifarch %ix86 x86_64 %arm ppc ppc64 mips
 	--enable-jit \
 %endif
@@ -196,3 +207,5 @@ rm -rf %{buildroot}%{_docdir}/pcre*
 %{_mandir}/man1/pcre-config.1*
 %{_mandir}/man3/*.3*
 
+%files -n %{staticname}
+%{_libdir}/*.a
