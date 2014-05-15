@@ -4,11 +4,11 @@
 %define pcreposix1_major 1
 %define pcreposix0_major 0
 
-%define libname		%mklibname pcre %{pcre_major}
-%define libname16	%mklibname pcre16_ %{pcre16_major}
-%define libnamecpp	%mklibname pcrecpp %{pcrecpp_major}
-%define libnameposix1	%mklibname pcreposix %{pcreposix1_major}
-%define libnameposix0	%mklibname pcreposix %{pcreposix0_major}
+%define libname %mklibname pcre %{pcre_major}
+%define libname16 %mklibname pcre16_ %{pcre16_major}
+%define libnamecpp %mklibname pcrecpp %{pcrecpp_major}
+%define libnameposix1 %mklibname pcreposix %{pcreposix1_major}
+%define libnameposix0 %mklibname pcreposix %{pcreposix0_major}
 %define develname %mklibname -d pcre
 %define staticname %mklibname -s -d pcre
 
@@ -17,13 +17,12 @@
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.34
+Version:	8.35
 Release:	1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
 Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
-Source1:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2.sig
 Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch2:		pcre-linkage_fix.diff
 # from debian:
