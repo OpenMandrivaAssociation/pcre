@@ -9,11 +9,11 @@
 %define libnamecpp %mklibname pcrecpp %{pcrecpp_major}
 %define libnameposix1 %mklibname pcreposix %{pcreposix1_major}
 %define libnameposix0 %mklibname pcreposix %{pcreposix0_major}
-%define develname %mklibname -d pcre
-%define staticname %mklibname -s -d pcre
+%define devname %mklibname pcre -d
+%define sdevname %mklibname pcre -d -s
 
 %define build_pcreposix_compat 1
-%bcond_with	crosscompile
+%bcond_with crosscompile
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
@@ -22,92 +22,150 @@ Release:	1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
-Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%name-%version.tar.bz2
-Patch1:		pcre-0.6.5-fix-detect-into-kdelibs.patch
-Patch2:		pcre-linkage_fix.diff
+Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%{name}-%{version}.tar.bz2
+Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
+Patch1:		pcre-linkage_fix.diff
+Patch2:		pcre-8.21-multilib.patch
+Patch3:		pcre-8.35-Do-not-rely-on-wrapping-signed-integer-while-parsein.patch
 # from debian:
-Patch4:		pcre-pcreposix-glibc-conflict.patch
+Patch5:		pcre-pcreposix-glibc-conflict.patch
 BuildRequires:	libtool
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
 the POSIX API are also supplied in the library libpcreposix. Note that this
 just provides a POSIX calling interface to PCRE: the regular expressions
-themselves still follow Perl syntax and semantics. 
+themselves still follow Perl syntax and semantics.
+
 This package contains a grep variant based on the PCRE library.
 
-%package -n	%{libname}
-Group:		System/Libraries
-Summary:	Perl-compatible regular expression library
+%files
+%doc AUTHORS COPYING LICENCE NEWS README
+%{_bindir}/pcregrep
+%{_bindir}/pcretest
+%{_mandir}/man1/pcregrep.1*
+%{_mandir}/man1/pcretest.1*
 
-%description -n	%{libname}
+#----------------------------------------------------------------------------
+
+%package -n %{libname}
+Summary:	Perl-compatible regular expression library
+Group:		System/Libraries
+
+%description -n %{libname}
 This package contains the shared library libpcre.
 
-%package -n	%{libname16}
-Group:		System/Libraries
+%files -n %{libname}
+/%{_lib}/libpcre.so.%{pcre_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{libname16}
 Summary:	Perl-compatible regular expression library
+Group:		System/Libraries
 Conflicts:	%{_lib}pcre1 < 8.30-3
 
-%description -n	%{libname16}
+%description -n %{libname16}
 This package contains the shared library libpcre16.
 
-%package -n	%{libnamecpp}
-Group:		System/Libraries
+%files -n %{libname16}
+%{_libdir}/libpcre16.so.%{pcre16_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{libnamecpp}
 Summary:	Perl-compatible regular expression library
+Group:		System/Libraries
 Conflicts:	%{_lib}pcre1 < 8.30-3
 
-%description -n	%{libnamecpp}
+%description -n %{libnamecpp}
 This package contains the shared library libpcrecpp.
 
-%package -n	%{libnameposix1}
-Group:		System/Libraries
+%files -n %{libnamecpp}
+%{_libdir}/libpcrecpp.so.%{pcrecpp_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{libnameposix1}
 Summary:	Perl-compatible regular expression library
+Group:		System/Libraries
 Conflicts:	%{_lib}pcre1 < 8.30-3
 
-%description -n	%{libnameposix1}
+%description -n %{libnameposix1}
 This package contains the shared library libpcreposix.
 
-%package -n	%{libnameposix0}
-Group:		System/Libraries
+%files -n %{libnameposix1}
+/%{_lib}/libpcreposix.so.%{pcreposix1_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{libnameposix0}
 Summary:	Perl-compatible regular expression library
+Group:		System/Libraries
 Conflicts:	%{_lib}pcre1 < 8.30-3
 Conflicts:	%{_lib}pcre0 < 8.21
 
-%description -n	%{libnameposix0}
+%description -n %{libnameposix0}
 This package contains the shared library libpcreposix compat.
 
-%package -n	%{develname}
-Group:		Development/C
-Summary:	Headers for pcre development
-Requires:	%{libname} = %{version}-%{release}
-Requires:	%{libname16} = %{version}-%{release}
-Requires:	%{libnamecpp} = %{version}-%{release}
-Requires:	%{libnameposix1} = %{version}-%{release}
-Requires:	%{libnameposix0} = %{version}-%{release}
-Provides:	%{name}-devel = %{version}-%{release}
+%files -n %{libnameposix0}
+%{_libdir}/libpcreposix.so.%{pcreposix0_major}*
 
-%description -n	%{develname}
-Install this package if you want do compile applications using the pcre
+#----------------------------------------------------------------------------
+
+%package -n %{devname}
+Summary:	Headers for pcre development
+Group:		Development/C
+Requires:	%{libname} = %{EVRD}
+Requires:	%{libname16} = %{EVRD}
+Requires:	%{libnamecpp} = %{EVRD}
+Requires:	%{libnameposix1} = %{EVRD}
+Requires:	%{libnameposix0} = %{EVRD}
+Provides:	%{name}-devel = %{EVRD}
+
+%description -n %{devname}
+Install this package if you want do compile applications using the PCRE
 library.
 
-The header file for the POSIX-style functions is called pcreposix.h. The 
-official POSIX name is regex.h, but I didn't want to risk possible problems 
+The header file for the POSIX-style functions is called pcreposix.h. The
+official POSIX name is regex.h, but I didn't want to risk possible problems
 with existing files of that name by distributing it that way. To use it with an
 existing program that uses the POSIX API, it will have to be renamed or pointed
 at by a link.
 
-%package -n	%{staticname}
-Group:		Development/C
-Summary:	Library file for linking statically to PCRE
-Requires:	%{develname} = %{EVRD}
+%files -n %{devname}
+%doc doc/html ChangeLog
+%{_bindir}/pcre-config
+%{_libdir}/lib*.so
+%{_includedir}/*.h
+%{_libdir}/pkgconfig/libpcre16.pc
+%{_libdir}/pkgconfig/libpcrecpp.pc
+%{_libdir}/pkgconfig/libpcre.pc
+%{_libdir}/pkgconfig/libpcreposix.pc
+%{_mandir}/man1/pcre-config.1*
+%{_mandir}/man3/*.3*
 
-%description -n	%{staticname}
-Library file for linking statically to PCRE
+#----------------------------------------------------------------------------
+
+%package -n %{sdevname}
+Summary:	Library file for linking statically to PCRE
+Group:		Development/C
+Requires:	%{devname} = %{EVRD}
+
+%description -n %{sdevname}
+Library file for linking statically to PCRE.
+
+%files -n %{sdevname}
+%{_libdir}/*.a
+
+#----------------------------------------------------------------------------
 
 %prep
 %setup -q
-%patch1 -p1 -b .detect_into_kdelibs
-%patch2 -p0
+%patch0 -p1 -b .detect_into_kdelibs
+%patch1 -p0
+%patch2 -p1
+%patch3 -p1
 
 # bork
 sed -i -e "s|ln -s|ln -snf|g" Makefile.am
@@ -117,7 +175,7 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
   # create a libpcreposix.so.0 without the patch
   cp -a . ../pcre-with-pcreposix_compat && mv ../pcre-with-pcreposix_compat .
 %endif
-%patch4 -p1 -b .symbol-conflict
+%patch5 -p1 -b .symbol-conflict
 
 %build
 %if %{build_pcreposix_compat}
@@ -133,7 +191,7 @@ for i in $dirs; do
   # Please don't remove it.
   %configure2_5x \
 	--enable-static \
-%ifarch %ix86 x86_64 %arm ppc ppc64 mips
+%ifarch %{ix86} x86_64 %{arm}
 	--enable-jit \
 %endif
 	--enable-utf \
@@ -142,15 +200,6 @@ for i in $dirs; do
   %make
   cd -
 done
-
-%check
-export LC_ALL=C
-# Tests, patch out actual pcre_study_size in expected results
-#echo 'int main() { printf("%d", sizeof(pcre_study_data)); return 0; }' | \
-#%{__cc} -xc - -include "pcre_internal.h" -I. -o study_size
-#STUDY_SIZE=`./study_size`
-#perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
-make check
 
 %install
 %if %{build_pcreposix_compat}
@@ -172,39 +221,12 @@ ln -srf %{buildroot}/%{_lib}/libpcreposix.so.%{pcreposix1_major}.*.* %{buildroot
 # Remove unwanted files
 rm -rf %{buildroot}%{_docdir}/pcre*
 
-%files
-%doc AUTHORS COPYING LICENCE NEWS README
-%{_bindir}/pcregrep
-%{_bindir}/pcretest
-%{_mandir}/man1/pcregrep.1*
-%{_mandir}/man1/pcretest.1*
+%check
+export LC_ALL=C
+# Tests, patch out actual pcre_study_size in expected results
+#echo 'int main() { printf("%d", sizeof(pcre_study_data)); return 0; }' | \
+#%{__cc} -xc - -include "pcre_internal.h" -I. -o study_size
+#STUDY_SIZE=`./study_size`
+#perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
+make check
 
-%files -n %{libname}
-/%{_lib}/libpcre.so.%{pcre_major}*
-
-%files -n %{libname16}
-%{_libdir}/libpcre16.so.%{pcre16_major}*
-
-%files -n %{libnamecpp}
-%{_libdir}/libpcrecpp.so.%{pcrecpp_major}*
-
-%files -n %{libnameposix1}
-/%{_lib}/libpcreposix.so.%{pcreposix1_major}*
-
-%files -n %{libnameposix0}
-%{_libdir}/libpcreposix.so.%{pcreposix0_major}*
-
-%files -n %{develname}
-%doc doc/html ChangeLog
-%{_bindir}/pcre-config
-%{_libdir}/lib*.so
-%{_includedir}/*.h
-%{_libdir}/pkgconfig/libpcre16.pc
-%{_libdir}/pkgconfig/libpcrecpp.pc
-%{_libdir}/pkgconfig/libpcre.pc
-%{_libdir}/pkgconfig/libpcreposix.pc
-%{_mandir}/man1/pcre-config.1*
-%{_mandir}/man3/*.3*
-
-%files -n %{staticname}
-%{_libdir}/*.a
