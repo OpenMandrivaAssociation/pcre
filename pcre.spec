@@ -17,8 +17,8 @@
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.35
-Release:	4
+Version:	8.36
+Release:	1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -189,7 +189,7 @@ for i in $dirs; do
   autoreconf -fi
   # The static lib is needed for qemu-static-* targets.
   # Please don't remove it.
-  %configure2_5x \
+  %configure \
 	--enable-static \
 %ifarch %{ix86} x86_64 %{arm}
 	--enable-jit \
