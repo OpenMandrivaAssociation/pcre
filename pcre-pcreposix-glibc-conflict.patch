@@ -75,12 +75,12 @@ diff -Naurp pcre-8.33/configure.ac pcre-8.33.oden/configure.ac
 --- pcre-8.35/configure.ac	2013-05-27 17:54:34.000000000 +0200
 +++ pcre-8.35.oden/configure.ac	2013-08-09 18:23:42.117248731 +0200
 @@ -20,7 +20,7 @@ m4_define(pcre_date, [2013-05-28])
- m4_define(libpcre_version, [3:3:2])
- m4_define(libpcre16_version, [2:3:2])
- m4_define(libpcre32_version, [0:3:0])
--m4_define(libpcreposix_version, [0:2:0])
+ m4_define(libpcre_version, [3:4:2])
+ m4_define(libpcre16_version, [2:4:2])
+ m4_define(libpcre32_version, [0:4:0])
+-m4_define(libpcreposix_version, [0:3:0])
 +m4_define(libpcreposix_version, [1:0:0])
- m4_define(libpcrecpp_version, [0:0:0])
+ m4_define(libpcrecpp_version, [0:1:0])
  
  AC_PREREQ(2.57)
 diff -Naurp pcre-8.33/pcreposix.h pcre-8.33.oden/pcreposix.h

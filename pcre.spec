@@ -26,10 +26,11 @@ Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%{name}-%{version
 Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch1:		pcre-linkage_fix.diff
 Patch2:		pcre-8.21-multilib.patch
-Patch3:		pcre-8.35-Do-not-rely-on-wrapping-signed-integer-while-parsein.patch
+Patch3:		pcre-8.36-Fix-bug-when-there-are-unset-groups-prior-to-ACCEPT-.patch
+Patch4:		pcre-8.36-Fix-zero-repeat-assertion-condition-bug.patch
 # from debian:
 Patch5:		pcre-pcreposix-glibc-conflict.patch
-BuildRequires:	libtool
+#BuildRequires:	libtool
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
@@ -166,6 +167,7 @@ Library file for linking statically to PCRE.
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # bork
 sed -i -e "s|ln -s|ln -snf|g" Makefile.am
