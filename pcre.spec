@@ -17,7 +17,7 @@
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.36
+Version:	8.37
 Release:	1
 License:	BSD-Style
 Group:		File tools
@@ -26,8 +26,6 @@ Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%{name}-%{version
 Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch1:		pcre-linkage_fix.diff
 Patch2:		pcre-8.21-multilib.patch
-Patch3:		pcre-8.36-Fix-bug-when-there-are-unset-groups-prior-to-ACCEPT-.patch
-Patch4:		pcre-8.36-Fix-zero-repeat-assertion-condition-bug.patch
 # from debian:
 Patch5:		pcre-pcreposix-glibc-conflict.patch
 #BuildRequires:	libtool
@@ -166,8 +164,6 @@ Library file for linking statically to PCRE.
 %patch0 -p1 -b .detect_into_kdelibs
 %patch1 -p0
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 # bork
 sed -i -e "s|ln -s|ln -snf|g" Makefile.am
