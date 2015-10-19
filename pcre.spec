@@ -27,7 +27,19 @@ Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch1:		pcre-linkage_fix.diff
 Patch2:		pcre-8.21-multilib.patch
 # from debian:
-Patch5:		pcre-pcreposix-glibc-conflict.patch
+Patch3:		pcre-pcreposix-glibc-conflict.patch
+# from fedora
+# Fix CVE-2015-3210, bug #1236659
+Patch4:		pcre-8.37-Fix-buffer-overflow-for-named-recursive-back-referen.patch
+Patch5:		pcre-8.37-Fix-buffer-overflow-for-forward-reference-within-bac.patch
+Patch6:		pcre-8.37-Fix-named-forward-reference-to-duplicate-group-numbe.patch
+Patch7:		pcre-8.37-Fix-another-buffer-overflow.patch
+Patch8:		pcre-8.37-Fix-buffer-overflow-for-named-references-in-situatio.patch
+Patch9:		pcre-8.37-Hack-in-yet-other-patch-for-a-bug-in-size-computatio.patch
+Patch10:	pcre-8.37-Fix-compile-bug-for-classes-like-W-p-Any.patch
+
+
+
 #BuildRequires:	libtool
 
 %description
@@ -162,8 +174,15 @@ Library file for linking statically to PCRE.
 %prep
 %setup -q
 %patch0 -p1 -b .detect_into_kdelibs
-%patch1 -p0
+%patch1 -p1
 %patch2 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
 
 # bork
 sed -i -e "s|ln -s|ln -snf|g" Makefile.am
@@ -173,7 +192,7 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
   # create a libpcreposix.so.0 without the patch
   cp -a . ../pcre-with-pcreposix_compat && mv ../pcre-with-pcreposix_compat .
 %endif
-%patch5 -p1 -b .symbol-conflict
+%patch3 -p1 -b .symbol-conflict
 
 %build
 %if %{build_pcreposix_compat}

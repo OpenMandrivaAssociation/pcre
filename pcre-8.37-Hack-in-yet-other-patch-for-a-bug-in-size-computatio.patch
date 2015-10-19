@@ -1,0 +1,79 @@
+From cf3a19441dc85daf8f91d5b84f42021dc1007251 Mon Sep 17 00:00:00 2001
+From: ph10 <ph10@2f5784b3-3f2a-0410-8824-cb99058d5e15>
+Date: Fri, 21 Aug 2015 16:08:33 +0000
+Subject: [PATCH] Hack in yet other patch for a bug in size computation that is
+ fixed "properly" in PCRE2.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Upstream commit ported to 8.37:
+
+commit f25903ade90a9177cf1175eb48fb36e500b3cca4
+Author: ph10 <ph10@2f5784b3-3f2a-0410-8824-cb99058d5e15>
+Date:   Fri Aug 21 16:08:33 2015 +0000
+
+    Hack in yet other patch for a bug in size computation that is fixed "properly"
+    in PCRE2.
+
+    git-svn-id: svn://vcs.exim.org/pcre/code/trunk@1594 2f5784b3-3f2a-0410-8824-cb99058d5e15
+
+Signed-off-by: Petr Písař <ppisar@redhat.com>
+---
+ pcre_compile.c       | 5 ++---
+ testdata/testinput2  | 2 ++
+ testdata/testoutput2 | 2 ++
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/pcre_compile.c b/pcre_compile.c
+index 5fe5c1d..681d2a1 100644
+--- a/pcre_compile.c
++++ b/pcre_compile.c
+@@ -7200,7 +7200,7 @@ for (;; ptr++)
+           encountered. In that case, we allow yet more memory, just in case. 
+           (Again, this is fixed "properly" in PCRE2. */
+           
+-          if (cd->dupgroups) *lengthptr += 2 + 2*LINK_SIZE;
++          if (cd->dupgroups) *lengthptr += 4 + 4*LINK_SIZE;
+ 
+           /* Otherwise, check for recursion here. The name table does not exist
+           in the first pass; instead we must scan the list of names encountered
+@@ -9403,7 +9403,7 @@ used in this code because at least one compiler gives a warning about loss of
+ "const" attribute if the cast (pcre_uchar *)codestart is used directly in the
+ function call. */
+ 
+-if ((options & PCRE_NO_AUTO_POSSESS) == 0)
++if (errorcode == 0 && (options & PCRE_NO_AUTO_POSSESS) == 0)
+   {
+   pcre_uchar *temp = (pcre_uchar *)codestart;
+   auto_possessify(temp, utf, cd);
+@@ -9630,4 +9630,3 @@ return (pcre32 *)re;
+ }
+ 
+ /* End of pcre_compile.c */
+-
+diff --git a/testdata/testinput2 b/testdata/testinput2
+index 8e044f8..feca135 100644
+--- a/testdata/testinput2
++++ b/testdata/testinput2
+@@ -4160,4 +4160,6 @@ backtracking verbs. --/
+ 
+ /(?J:(?|(:(?|(?'R')(\k'R')|((?'R')))H'Rk'Rf)|s(?'R')))/
+ 
++/(?J:(?|(:(?|(?'R')(\z(?|(?'R')(\k'R')|((?'R')))k'R')|((?'R')))H'Ak'Rf)|s(?'R')))/
++
+ /-- End of testinput2 --/
+diff --git a/testdata/testoutput2 b/testdata/testoutput2
+index 6019425..3b06f85 100644
+--- a/testdata/testoutput2
++++ b/testdata/testoutput2
+@@ -14432,4 +14432,6 @@ Failed: unmatched parentheses at offset 23
+ 
+ /(?J:(?|(:(?|(?'R')(\k'R')|((?'R')))H'Rk'Rf)|s(?'R')))/
+ 
++/(?J:(?|(:(?|(?'R')(\z(?|(?'R')(\k'R')|((?'R')))k'R')|((?'R')))H'Ak'Rf)|s(?'R')))/
++
+ /-- End of testinput2 --/
+-- 
+2.4.3
+
