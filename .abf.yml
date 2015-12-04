@@ -1,5 +1,6 @@
 removed_sources:
   pcre-8.31.tar.bz2: 1132276bb8bea7cb0662210fb812fbef7791621f
-sources:
   pcre-8.32.tar.bz2: dbd44267cf4d7c6464391003908d5a4342726700
-  pcre-8.32.tar.bz2.sig: 7228bb6104534d7d1dcf25a37f4ddcc500d2125d
+sources:
+  pcre-8.38.tar.bz2: ae84e3b3ef0764788ce33b1adeff1add938126e1
+  pcre-8.38.tar.bz2.sig: 16d4603b7be30378223e46bee75f6390907fb746
