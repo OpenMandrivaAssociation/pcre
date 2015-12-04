@@ -71,21 +71,21 @@ gcc -Wl,--as-needed t.c -L. -lx -la; ./a.out # fb
 i wonder if ld could have a warning to detect about multiple symbols
 in DSO and so tell about possible issues with --as-needed.
 
-diff -Naurp pcre-8.33/configure.ac pcre-8.33.oden/configure.ac
---- pcre-8.35/configure.ac	2013-05-27 17:54:34.000000000 +0200
-+++ pcre-8.35.oden/configure.ac	2013-08-09 18:23:42.117248731 +0200
-@@ -20,7 +20,7 @@ m4_define(pcre_date, [2013-05-28])
- m4_define(libpcre_version, [3:5:2])
- m4_define(libpcre16_version, [2:5:2])
- m4_define(libpcre32_version, [0:5:0])
+diff -Naurp pcre-8.31/configure.ac pcre-8.31.oden/configure.ac
+--- pcre-8.31/configure.ac	2012-07-06 11:01:42.000000000 +0200
++++ pcre-8.31.oden/configure.ac	2012-07-09 11:22:03.000000000 +0200
+@@ -19,7 +19,7 @@ m4_define(pcre_date, [2012-07-06])
+ m4_define(libpcre_version, [3:6:2])
+ m4_define(libpcre16_version, [2:6:2])
+ m4_define(libpcre32_version, [0:6:0])
 -m4_define(libpcreposix_version, [0:3:0])
 +m4_define(libpcreposix_version, [1:0:0])
  m4_define(libpcrecpp_version, [0:1:0])
  
  AC_PREREQ(2.57)
-diff -Naurp pcre-8.33/pcreposix.h pcre-8.33.oden/pcreposix.h
---- pcre-8.33/pcreposix.h	2011-12-28 17:57:51.000000000 +0100
-+++ pcre-8.33.oden/pcreposix.h	2013-08-09 18:22:57.127944038 +0200
+diff -Naurp pcre-8.31/pcreposix.h pcre-8.31.oden/pcreposix.h
+--- pcre-8.31/pcreposix.h	2012-07-09 11:22:23.000000000 +0200
++++ pcre-8.31.oden/pcreposix.h	2012-07-09 11:21:24.000000000 +0200
 @@ -133,14 +133,19 @@ file. */
  
  /* The functions */
