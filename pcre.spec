@@ -18,7 +18,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.38
-Release:	2
+Release:	2.1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -150,6 +150,7 @@ at by a link.
 %package -n %{sdevname}
 Summary:	Library file for linking statically to PCRE
 Group:		Development/C
+Provides:	%{name}-static-devel = %{EVRD}
 Requires:	%{devname} = %{EVRD}
 
 %description -n %{sdevname}
@@ -228,4 +229,3 @@ export LC_ALL=C
 #STUDY_SIZE=`./study_size`
 #perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
 make check
-
