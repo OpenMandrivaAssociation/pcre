@@ -1,11 +1,13 @@
 %define pcre_major 1
 %define pcre16_major 0
+%define pcre32_major 0
 %define pcrecpp_major 0
 %define pcreposix1_major 1
 %define pcreposix0_major 0
 
 %define libname %mklibname pcre %{pcre_major}
 %define libname16 %mklibname pcre16_ %{pcre16_major}
+%define libname32 %mklibname pcre32_ %{pcre32_major}
 %define libnamecpp %mklibname pcrecpp %{pcrecpp_major}
 %define libnameposix1 %mklibname pcreposix %{pcreposix1_major}
 %define libnameposix0 %mklibname pcreposix %{pcreposix0_major}
@@ -15,21 +17,26 @@
 %define build_pcreposix_compat 1
 %bcond_with crosscompile
 
+%ifnarch %{ix86}
+# (tpg) optimize it a bit
+%global optflags %optflags -O3
+%endif
+
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.38
-Release:	2.1
+Version:	8.39
+Release:	2
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
 Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%{name}-%{version}.tar.bz2
+Source1:	pcre.rpmlintrc
 Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch1:		pcre-linkage_fix.diff
 Patch2:		pcre-8.21-multilib.patch
 # from debian:
 Patch3:		pcre-pcreposix-glibc-conflict.patch
-
-#BuildRequires:	libtool
+BuildRequires:	libtool
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
@@ -70,6 +77,18 @@ This package contains the shared library libpcre16.
 
 %files -n %{libname16}
 %{_libdir}/libpcre16.so.%{pcre16_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{libname32}
+Summary:	Perl-compatible regular expression library
+Group:		System/Libraries
+
+%description -n %{libname32}
+This package contains the shared library libpcre32.
+
+%files -n %{libname32}
+%{_libdir}/libpcre32.so.%{pcre32_major}*
 
 #----------------------------------------------------------------------------
 
@@ -118,6 +137,7 @@ Summary:	Headers for pcre development
 Group:		Development/C
 Requires:	%{libname} = %{EVRD}
 Requires:	%{libname16} = %{EVRD}
+Requires:	%{libname32} = %{EVRD}
 Requires:	%{libnamecpp} = %{EVRD}
 Requires:	%{libnameposix1} = %{EVRD}
 Requires:	%{libnameposix0} = %{EVRD}
@@ -139,6 +159,7 @@ at by a link.
 %{_libdir}/lib*.so
 %{_includedir}/*.h
 %{_libdir}/pkgconfig/libpcre16.pc
+%{_libdir}/pkgconfig/libpcre32.pc
 %{_libdir}/pkgconfig/libpcrecpp.pc
 %{_libdir}/pkgconfig/libpcre.pc
 %{_libdir}/pkgconfig/libpcreposix.pc
@@ -163,7 +184,7 @@ Library file for linking statically to PCRE.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch0 -p1 -b .detect_into_kdelibs
 %patch1 -p1
 %patch2 -p1
 
@@ -196,6 +217,7 @@ for i in $dirs; do
 %endif
 	--enable-utf \
 	--enable-pcre16 \
+	--enable-pcre32 \
 	--enable-unicode-properties
   %make
   cd -
