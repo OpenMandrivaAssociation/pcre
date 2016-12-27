@@ -28,6 +28,7 @@ License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
 Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%{name}-%{version}.tar.bz2
+Source1:	pcre.rpmlintrc
 Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch1:		pcre-linkage_fix.diff
 Patch2:		pcre-8.21-multilib.patch
