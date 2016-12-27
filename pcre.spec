@@ -17,10 +17,13 @@
 %define build_pcreposix_compat 1
 %bcond_with crosscompile
 
+# (tpg) optimize it a bit
+%global optflags -O3
+
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.39
-Release:	1
+Release:	2
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
