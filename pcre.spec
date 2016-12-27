@@ -17,8 +17,10 @@
 %define build_pcreposix_compat 1
 %bcond_with crosscompile
 
+%ifnarch %{ix86}
 # (tpg) optimize it a bit
-%global optflags -O3
+%global optflags %optflags -O3
+%endif
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
