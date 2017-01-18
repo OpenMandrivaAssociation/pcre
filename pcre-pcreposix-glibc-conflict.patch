@@ -18,7 +18,7 @@ the symbol conflict is a mess. pcreposix better be fixed
 it's hard to beat libc... here is what happens:
 
 % echo 'int f() { regcomp(); }' > liba.c
-% gcc -shared -o liba.so liba.c -lpcreposix 
+% gcc -shared -o liba.so liba.c -lpcreposix
 % ldd liba.so
         libpcreposix.so.0 => /usr/lib/libpcreposix.so.0 (0xb7f76000)
         libc.so.6 => /lib/i686/libc.so.6 (0xb7e28000)
@@ -71,29 +71,25 @@ gcc -Wl,--as-needed t.c -L. -lx -la; ./a.out # fb
 i wonder if ld could have a warning to detect about multiple symbols
 in DSO and so tell about possible issues with --as-needed.
 
-
-diff --git a/configure.ac b/configure.ac
-index 38d1dba..d423f0f 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -20,7 +20,7 @@ m4_define(pcre_date, [2015-04-28])
- m4_define(libpcre_version, [3:7:2])
- m4_define(libpcre16_version, [2:7:2])
- m4_define(libpcre32_version, [0:7:0])
+diff -Naur pcre-8.40/configure.ac pcre-8.40.tpg/configure.ac
+--- pcre-8.40/configure.ac	2017-01-11 15:37:28.000000000 +0000
++++ pcre-8.40.tpg/configure.ac	2017-01-18 20:06:41.358130677 +0000
+@@ -20,7 +20,7 @@
+ m4_define(libpcre_version, [3:8:2])
+ m4_define(libpcre16_version, [2:8:2])
+ m4_define(libpcre32_version, [0:8:0])
 -m4_define(libpcreposix_version, [0:4:0])
 +m4_define(libpcreposix_version, [1:0:0])
  m4_define(libpcrecpp_version, [0:1:0])
  
  AC_PREREQ(2.57)
-diff --git a/pcreposix.h b/pcreposix.h
-index 6424a74..b869da5 100644
---- a/pcreposix.h
-+++ b/pcreposix.h
-@@ -132,15 +132,19 @@ file. */
- #endif
+diff -Naur pcre-8.40/pcreposix.h pcre-8.40.tpg/pcreposix.h
+--- pcre-8.40/pcreposix.h	2014-01-31 14:32:51.000000000 +0000
++++ pcre-8.40.tpg/pcreposix.h	2017-01-18 20:08:34.514768012 +0000
+@@ -133,14 +133,19 @@
  
  /* The functions */
--
+ 
 -PCREPOSIX_EXP_DECL int regcomp(regex_t *, const char *, int);
 -PCREPOSIX_EXP_DECL int regexec(const regex_t *, const char *, size_t,
 +PCREPOSIX_EXP_DECL int pcreposix_regcomp(regex_t *, const char *, int);
