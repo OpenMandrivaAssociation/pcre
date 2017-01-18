@@ -24,8 +24,8 @@
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.39
-Release:	2
+Version:	8.40
+Release:	1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -154,7 +154,7 @@ existing program that uses the POSIX API, it will have to be renamed or pointed
 at by a link.
 
 %files -n %{devname}
-%doc doc/html ChangeLog
+%doc doc/html
 %{_bindir}/pcre-config
 %{_libdir}/lib*.so
 %{_includedir}/*.h
