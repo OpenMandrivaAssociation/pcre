@@ -25,7 +25,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.41
-Release:	2
+Release:	3
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -36,6 +36,15 @@ Patch1:		pcre-linkage_fix.diff
 Patch2:		pcre-8.21-multilib.patch
 # from debian:
 Patch3:		pcre-pcreposix-glibc-conflict.patch
+# from fedora:
+# Fix recursion stack estimator, upstream bug #2173, refused by upstream
+Patch10:	pcre-8.41-fix_stack_estimator.patch
+# 1/2 Accept files names longer than 128 bytes in recursive mode of pcregrep,
+# upstream bug #2177, in upstream after 8.41
+Patch11:	pcre-8.41-Fix-pcregrep-recursive-file-name-issue.patch
+# 2/2 Accept files names longer than 128 bytes in recursive mode of pcregrep,
+# upstream bug #2177, in upstream after 8.41
+Patch12:	pcre-8.41-Fix-possible-memory-leak-introduced-in-previous-bug-.patch
 BuildRequires:	libtool
 
 %description
@@ -197,6 +206,9 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
   cp -a . ../pcre-with-pcreposix_compat && mv ../pcre-with-pcreposix_compat .
 %endif
 %patch3 -p1 -b .symbol-conflict
+%patch10 -p2
+%patch11 -p1
+%patch12 -p1
 
 %build
 %if %{build_pcreposix_compat}
