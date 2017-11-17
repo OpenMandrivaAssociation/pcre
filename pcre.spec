@@ -206,7 +206,7 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
   cp -a . ../pcre-with-pcreposix_compat && mv ../pcre-with-pcreposix_compat .
 %endif
 %patch3 -p1 -b .symbol-conflict
-%patch10 -p1
+%patch10 -p2
 %patch11 -p1
 %patch12 -p1
 
