@@ -198,7 +198,7 @@ Conflicts:	%{mklibname -d %{name}} < 2.54.3-2
 %description doc
 Documentation for %{name}.
 
-%files -n doc
+%files doc
 %doc AUTHORS COPYING LICENCE NEWS README
 %doc doc/html
 
