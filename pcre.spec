@@ -25,7 +25,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.41
-Release:	3
+Release:	4
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -56,7 +56,6 @@ themselves still follow Perl syntax and semantics.
 This package contains a grep variant based on the PCRE library.
 
 %files
-%doc AUTHORS COPYING LICENCE NEWS README
 %{_bindir}/pcregrep
 %{_bindir}/pcretest
 %{_mandir}/man1/pcregrep.1*
@@ -163,7 +162,7 @@ existing program that uses the POSIX API, it will have to be renamed or pointed
 at by a link.
 
 %files -n %{devname}
-%doc doc/html
+
 %{_bindir}/pcre-config
 %{_libdir}/lib*.so
 %{_includedir}/*.h
@@ -188,6 +187,20 @@ Library file for linking statically to PCRE.
 
 %files -n %{sdevname}
 %{_libdir}/*.a
+
+#----------------------------------------------------------------------------
+
+%package doc
+Summary:	Documentation for %{name}
+Group:		Books/Computer books
+Conflicts:	%{mklibname -d %{name}} < 2.54.3-2
+
+%description doc
+Documentation for %{name}.
+
+%files -n doc
+%doc AUTHORS COPYING LICENCE NEWS README
+%doc doc/html
 
 #----------------------------------------------------------------------------
 
