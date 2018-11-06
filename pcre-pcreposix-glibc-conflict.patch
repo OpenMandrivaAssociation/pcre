@@ -71,33 +71,34 @@ gcc -Wl,--as-needed t.c -L. -lx -la; ./a.out # fb
 i wonder if ld could have a warning to detect about multiple symbols
 in DSO and so tell about possible issues with --as-needed.
 
-diff -Naur pcre-8.41/configure.ac pcre-8.41.tpg/configure.ac
---- pcre-8.41/configure.ac	2017-07-05 10:31:42.010505424 +0000
-+++ pcre-8.41.tpg/configure.ac	2017-07-27 22:44:38.776285066 +0000
+Index: pcre-8.42/configure.ac
+===================================================================
+--- pcre-8.42/configure.ac
++++ pcre-8.42/configure.ac	2018-04-17 21:46:45.041138986 +0200
 @@ -20,7 +20,7 @@
- m4_define(libpcre_version, [3:9:2])
- m4_define(libpcre16_version, [2:9:2])
- m4_define(libpcre32_version, [0:9:0])
--m4_define(libpcreposix_version, [0:5:0])
-+m4_define(libpcreposix_version, [1:0:0])
+ m4_define(libpcre_version, [3:10:2])
+ m4_define(libpcre16_version, [2:10:2])
+ m4_define(libpcre32_version, [0:10:0])
+-m4_define(libpcreposix_version, [0:6:0])
++m4_define(libpcreposix_version, [1:1:0])
  m4_define(libpcrecpp_version, [0:1:0])
  
  AC_PREREQ(2.57)
-diff -Naur pcre-8.41/pcreposix.h pcre-8.41.tpg/pcreposix.h
---- pcre-8.41/pcreposix.h	2014-01-31 14:32:51.010505424 +0000
-+++ pcre-8.41.tpg/pcreposix.h	2017-07-27 22:46:49.223809179 +0000
+Index: pcre-8.42/pcreposix.h
+===================================================================
+--- pcre-8.42/pcreposix.h
++++ pcre-8.42/pcreposix.h	2018-04-17 21:48:18.291284209 +0200
 @@ -133,14 +133,19 @@
  
  /* The functions */
  
 -PCREPOSIX_EXP_DECL int regcomp(regex_t *, const char *, int);
 -PCREPOSIX_EXP_DECL int regexec(const regex_t *, const char *, size_t,
--                     regmatch_t *, int);
--PCREPOSIX_EXP_DECL size_t regerror(int, const regex_t *, char *, size_t);
--PCREPOSIX_EXP_DECL void regfree(regex_t *);
 +PCREPOSIX_EXP_DECL int pcreposix_regcomp(regex_t *, const char *, int);
 +PCREPOSIX_EXP_DECL int pcreposix_regexec(const regex_t *, const char *, size_t,
-+                      regmatch_t *, int);
+                      regmatch_t *, int);
+-PCREPOSIX_EXP_DECL size_t regerror(int, const regex_t *, char *, size_t);
+-PCREPOSIX_EXP_DECL void regfree(regex_t *);
 +PCREPOSIX_EXP_DECL size_t pcreposix_regerror(int, const regex_t *, char *, size_t);
 +PCREPOSIX_EXP_DECL void pcreposix_regfree(regex_t *);
  
