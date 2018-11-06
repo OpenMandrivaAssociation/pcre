@@ -234,13 +234,16 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
 %endif
 %patch3 -p1 -b .symbol-conflict
 %patch10 -p1
-%patch11 -p1
+%patch11 -p2
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+
+# Because of rpath patch
+libtoolize --copy --force
 
 %build
 %if %{build_pcreposix_compat}
@@ -256,7 +259,7 @@ for i in $dirs; do
   # Please don't remove it.
   %configure \
 	--enable-static \
-%ifarch %{ix86} x86_64 %{arm}
+%ifarch %{ix86} %{x86_64} %{arm}
 	--enable-jit \
 %endif
 	--enable-utf \
