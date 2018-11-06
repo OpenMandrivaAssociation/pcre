@@ -25,7 +25,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.42
-Release:	1
+Release:	2
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -60,6 +60,10 @@ Patch16:     pcre-8.42-Fix-subject-buffer-overread-in-JIT.patch
 # upstream bug #2332, in upstream after 8.42
 Patch17:     pcre-8.42-Fix-zero-repeat-leading-subroutine-call-first-charac.patch
 BuildRequires:	libtool
+BuildRequires:	pkgconfig(zlib)
+BuildRequires:	pkgconfig(bz2)
+BuildRequires:	pkgconfig(readline)
+BuildRequires:	pkgconfig(libedit)
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
