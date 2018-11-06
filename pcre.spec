@@ -61,7 +61,7 @@ Patch16:     pcre-8.42-Fix-subject-buffer-overread-in-JIT.patch
 Patch17:     pcre-8.42-Fix-zero-repeat-leading-subroutine-call-first-charac.patch
 BuildRequires:	libtool
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	pkgconfig(bz2)
+BuildRequires:	pkgconfig(bzip2)
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(libedit)
 
