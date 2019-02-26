@@ -24,8 +24,8 @@
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.42
-Release:	2
+Version:	8.43
+Release:	1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -40,25 +40,6 @@ Patch3:		pcre-pcreposix-glibc-conflict.patch
 Patch10:     pcre-8.32-refused_spelling_terminated.patch
 # Fix recursion stack estimator, upstream bug #2173, refused by upstream
 Patch11:     pcre-8.41-fix_stack_estimator.patch
-# Fix handling UTF and start-of-pattern options in C++ wrapper,
-# upstream bug #2283, in upstream after 8.42
-Patch12:     pcre-8.42-Fix-two-C-wrapper-bugs-unnoticed-for-years.patch
-# Fix an error message and locale handling in pcregrep tool,
-# in upstream after 8.42
-Patch13:     pcre-8.42-Fix-typos-in-pcrgrep.patch
-# Fix autopossessifying a repeated negative class with no characters less than
-# 256 that is followed by a positive class with only characters less than 256,
-# upstream bug #2300, in upstream after 8.42
-Patch14:     pcre-8.42-Fix-bad-auto-possessify-for-certain-classes.patch
-# Fix anchoring in conditionals with only one branch, upstream bug #2307,
-# in upstream after 8.42
-Patch15:     pcre-8.42-Fix-anchoring-bug-in-conditional-subexpression.patch
-# Fix a subject buffer overread in JIT when UTF is disabled and \X or \R has
-# a greater than 1 fixed quantifier, in upstream after 8.42
-Patch16:     pcre-8.42-Fix-subject-buffer-overread-in-JIT.patch
-# Fix matching a zero-repeated subroutine call at a start of a pattern,
-# upstream bug #2332, in upstream after 8.42
-Patch17:     pcre-8.42-Fix-zero-repeat-leading-subroutine-call-first-charac.patch
 BuildRequires:	libtool
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(bzip2)
@@ -239,12 +220,6 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
 %patch3 -p1 -b .symbol-conflict
 %patch10 -p1
 %patch11 -p2
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
 
 # Because of rpath patch
 libtoolize --copy --force
