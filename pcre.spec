@@ -16,6 +16,7 @@
 
 %define build_pcreposix_compat 1
 %bcond_with crosscompile
+%bcond_without pgo
 
 %ifnarch %{ix86}
 # (tpg) optimize it a bit
@@ -25,7 +26,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.43
-Release:	1
+Release:	2
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -236,11 +237,42 @@ for i in $dirs; do
   autoreconf -fi
   # The static lib is needed for qemu-static-* targets.
   # Please don't remove it.
-  %configure \
+  %if %{with pgo}
+    CFLAGS="%{optflags} -fprofile-instr-generate" \
+    CXXFLAGS="%{optflags} -fprofile-instr-generate" \
+    LDFLAGS="%{ldflags} -fprofile-instr-generate" \
+    %configure \
 	--enable-static \
-%ifarch %{ix86} %{x86_64} %{arm}
+    %ifarch %{ix86} %{x86_64} %{arm}
 	--enable-jit \
-%endif
+    %endif
+	--enable-utf \
+	--enable-pcre16 \
+	--enable-pcre32 \
+	--enable-unicode-properties
+    %make_build
+
+    export LLVM_PROFILE_FILE=libpng-%p.profile.d
+    export LD_LIBRARY_PATH="$(pwd)"
+
+    make checks
+
+    unset LD_LIBRARY_PATH
+    unset LLVM_PROFILE_FILE
+    llvm-profdata merge --output=%{name}.profile *.profile.d
+    rm -f *.profile.d
+
+    make clean
+
+    CFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+    CXXFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+    LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+    %endif
+    %configure \
+	--enable-static \
+    %ifarch %{ix86} %{x86_64} %{arm}
+	--enable-jit \
+    %endif
 	--enable-utf \
 	--enable-pcre16 \
 	--enable-pcre32 \
