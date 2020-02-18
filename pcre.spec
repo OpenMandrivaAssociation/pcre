@@ -243,7 +243,7 @@ for i in $dirs; do
     LDFLAGS="%{ldflags} -fprofile-instr-generate" \
     %configure \
 	--enable-static \
-    %ifarch %{ix86} %{x86_64} %{arm}
+    %ifarch %{ix86} %{x86_64} %{armx}
 	--enable-jit \
     %endif
 	--enable-utf \
@@ -270,7 +270,7 @@ for i in $dirs; do
     %endif
     %configure \
 	--enable-static \
-    %ifarch %{ix86} %{x86_64} %{arm}
+    %ifarch %{ix86} %{x86_64} %{armx}
 	--enable-jit \
     %endif
 	--enable-utf \
