@@ -255,7 +255,7 @@ for i in $dirs; do
     export LLVM_PROFILE_FILE=libpng-%p.profile.d
     export LD_LIBRARY_PATH="$(pwd)"
 
-    make checks
+    make check
 
     unset LD_LIBRARY_PATH
     unset LLVM_PROFILE_FILE
