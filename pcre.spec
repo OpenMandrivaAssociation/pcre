@@ -1,3 +1,10 @@
+# pcre is used by glib2.0, which is used by wine
+%ifarch %{x86_64}
+%bcond_without compat32
+%else
+%bcond_with compat32
+%endif
+
 %define pcre_major 1
 %define pcre16_major 0
 %define pcre32_major 0
@@ -14,6 +21,15 @@
 %define devname %mklibname pcre -d
 %define sdevname %mklibname pcre -d -s
 
+%define lib32name libpcre%{pcre_major}
+%define lib32name16 libpcre16_%{pcre16_major}
+%define lib32name32 libpcre32_%{pcre32_major}
+%define lib32namecpp libpcrecpp%{pcrecpp_major}
+%define lib32nameposix1 libpcreposix%{pcreposix1_major}
+%define lib32nameposix0 libpcreposix%{pcreposix0_major}
+%define dev32name libpcre-devel
+%define sdev32name libpcre-static-devel
+
 %define build_pcreposix_compat 1
 %bcond_with crosscompile
 %bcond_without pgo
@@ -25,12 +41,12 @@
 
 Summary:	Perl-compatible regular expression library
 Name:		pcre
-Version:	8.43
-Release:	2
+Version:	8.44
+Release:	1
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
-Source0:	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%{name}-%{version}.tar.bz2
+Source0:	https://ftp.pcre.org/pub/pcre/%{name}-%{version}.tar.bz2
 Source1:	pcre.rpmlintrc
 Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
 Patch1:		pcre-linkage_fix.diff
@@ -190,6 +206,125 @@ Library file for linking statically to PCRE.
 
 #----------------------------------------------------------------------------
 
+%if %{with compat32}
+%package -n %{lib32name}
+Summary:	Perl-compatible regular expression library (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32name}
+This package contains the shared library libpcre. (32-bit)
+
+%files -n %{lib32name}
+%{_prefix}/lib/libpcre.so.%{pcre_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{lib32name16}
+Summary:	Perl-compatible regular expression library (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32name16}
+This package contains the shared library libpcre16. (32-bit)
+
+%files -n %{lib32name16}
+%{_prefix}/lib/libpcre16.so.%{pcre16_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{lib32name32}
+Summary:	Perl-compatible regular expression library (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32name32}
+This package contains the shared library libpcre32. (32-bit)
+
+%files -n %{lib32name32}
+%{_prefix}/lib/libpcre32.so.%{pcre32_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{lib32namecpp}
+Summary:	Perl-compatible regular expression library (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32namecpp}
+This package contains the shared library libpcrecpp. (32-bit)
+
+%files -n %{lib32namecpp}
+%{_prefix}/lib/libpcrecpp.so.%{pcrecpp_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{lib32nameposix1}
+Summary:	Perl-compatible regular expression library (32-bit)
+Group:		System/Libraries
+Conflicts:	%{_lib}pcre1 < 8.30-3
+
+%description -n %{lib32nameposix1}
+This package contains the shared library libpcreposix. (32-bit)
+
+%files -n %{lib32nameposix1}
+%{_prefix}/lib/libpcreposix.so.%{pcreposix1_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{lib32nameposix0}
+Summary:	Perl-compatible regular expression library (32-bit)
+Group:		System/Libraries
+
+%description -n %{lib32nameposix0}
+This package contains the shared library libpcreposix compat. (32-bit)
+
+%files -n %{lib32nameposix0}
+%{_prefix}/lib/libpcreposix.so.%{pcreposix0_major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{dev32name}
+Summary:	Headers for pcre development (32-bit)
+Group:		Development/C
+Requires:	%{lib32name} = %{EVRD}
+Requires:	%{lib32name16} = %{EVRD}
+Requires:	%{lib32name32} = %{EVRD}
+Requires:	%{lib32namecpp} = %{EVRD}
+Requires:	%{lib32nameposix1} = %{EVRD}
+Requires:	%{lib32nameposix0} = %{EVRD}
+Requires:	%{devname} = %{EVRD}
+
+%description -n %{dev32name}
+Install this package if you want do compile applications using the PCRE
+library. (32-bit)
+
+The header file for the POSIX-style functions is called pcreposix.h. The
+official POSIX name is regex.h, but I didn't want to risk possible problems
+with existing files of that name by distributing it that way. To use it with an
+existing program that uses the POSIX API, it will have to be renamed or pointed
+at by a link.
+
+%files -n %{dev32name}
+%{_prefix}/lib/lib*.so
+%{_prefix}/lib/pkgconfig/libpcre16.pc
+%{_prefix}/lib/pkgconfig/libpcre32.pc
+%{_prefix}/lib/pkgconfig/libpcrecpp.pc
+%{_prefix}/lib/pkgconfig/libpcre.pc
+%{_prefix}/lib/pkgconfig/libpcreposix.pc
+
+#----------------------------------------------------------------------------
+
+%package -n %{sdev32name}
+Summary:	Library file for linking statically to PCRE (32-bit)
+Group:		Development/C
+Requires:	%{dev32name} = %{EVRD}
+
+%description -n %{sdev32name}
+Library file for linking statically to PCRE. (32-bit)
+
+%files -n %{sdev32name}
+%{_prefix}/lib/*.a
+%endif
+
+#----------------------------------------------------------------------------
+
 %package doc
 Summary:	Documentation for %{name}
 Group:		Books/Computer books
@@ -231,10 +366,34 @@ dirs="pcre-with-pcreposix_compat ."
 %else
 dirs="."
 %endif
+
+%if %{with compat32}
 for i in $dirs; do
-  cd $i
-  mkdir -p m4
+  pushd $i
+  mkdir -p m4 build32
   autoreconf -fi
+  export CONFIGURE_TOP="$(pwd)"
+  cd build32
+  %configure32 \
+	--enable-static \
+  %ifarch %{ix86} %{x86_64} %{armx}
+	--enable-jit \
+  %endif
+	--enable-utf \
+	--enable-pcre16 \
+	--enable-pcre32 \
+	--enable-unicode-properties
+  %make_build
+  popd
+done
+%endif
+
+for i in $dirs; do
+  pushd $i
+  mkdir -p m4 build
+  autoreconf -fi
+  export CONFIGURE_TOP="$(pwd)"
+  cd build
   # The static lib is needed for qemu-static-* targets.
   # Please don't remove it.
   %if %{with pgo}
@@ -278,14 +437,20 @@ for i in $dirs; do
 	--enable-pcre32 \
 	--enable-unicode-properties
   %make_build
-  cd -
+  popd
 done
 
 %install
+%if %{with compat32}
 %if %{build_pcreposix_compat}
-%make_install -C pcre-with-pcreposix_compat
+%make_install -C pcre-with-pcreposix_compat/build32
 %endif
-%make_install
+%make_install -C build32
+%endif
+%if %{build_pcreposix_compat}
+%make_install -C pcre-with-pcreposix_compat/build
+%endif
+%make_install -C build
 
 install -d %{buildroot}/%{_lib}
 mv %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.* %{buildroot}/%{_lib}
@@ -308,4 +473,4 @@ export LC_ALL=C
 #%{__cc} -xc - -include "pcre_internal.h" -I. -o study_size
 #STUDY_SIZE=`./study_size`
 #perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
-make check
+make check -C build
