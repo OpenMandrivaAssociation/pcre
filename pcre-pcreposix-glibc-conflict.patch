@@ -1,19 +1,19 @@
-diff -up pcre-8.44/configure.ac.symbol-conflict pcre-8.44/configure.ac
---- pcre-8.44/configure.ac.symbol-conflict	2020-05-18 03:47:00.063000257 +0200
-+++ pcre-8.44/configure.ac	2020-05-18 03:47:27.335434077 +0200
-@@ -20,7 +20,7 @@ m4_define(pcre_date, [2020-02-12])
- m4_define(libpcre_version, [3:12:2])
- m4_define(libpcre16_version, [2:12:2])
- m4_define(libpcre32_version, [0:12:0])
+diff -uraN pcre-8.45/configure.ac omv-pcre-8.45/configure.ac
+--- pcre-8.45/configure.ac	2021-06-15 17:52:47.000000000 +0200
++++ omv-pcre-8.45/configure.ac	2021-08-16 15:02:38.369559815 +0200
+@@ -20,7 +20,7 @@
+ m4_define(libpcre_version, [3:13:2])
+ m4_define(libpcre16_version, [2:13:2])
+ m4_define(libpcre32_version, [0:13:0])
 -m4_define(libpcreposix_version, [0:7:0])
 +m4_define(libpcreposix_version, [1:1:0])
  m4_define(libpcrecpp_version, [0:2:0])
  
  AC_PREREQ(2.57)
-diff -up pcre-8.44/pcreposix.h.symbol-conflict pcre-8.44/pcreposix.h
---- pcre-8.44/pcreposix.h.symbol-conflict	2020-05-18 03:47:00.038999872 +0200
-+++ pcre-8.44/pcreposix.h	2020-05-18 03:47:00.064000274 +0200
-@@ -133,14 +133,19 @@ file. */
+diff -uraN pcre-8.45/pcreposix.h omv-pcre-8.45/pcreposix.h
+--- pcre-8.45/pcreposix.h	2014-01-31 15:32:51.000000000 +0100
++++ omv-pcre-8.45/pcreposix.h	2021-08-16 15:05:18.436256145 +0200
+@@ -133,14 +133,19 @@
  
  /* The functions */
  
