@@ -32,7 +32,7 @@
 
 %define build_pcreposix_compat 1
 %bcond_with crosscompile
-%bcond_without pgo
+%bcond_with pgo
 
 %ifnarch %{ix86}
 # (tpg) optimize it a bit
