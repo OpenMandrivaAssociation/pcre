@@ -32,7 +32,7 @@
 
 %define build_pcreposix_compat 1
 %bcond_with crosscompile
-%bcond_with pgo
+%bcond_without pgo
 
 %ifnarch %{ix86}
 # (tpg) optimize it a bit
@@ -42,7 +42,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.45
-Release:	1
+Release:	2
 License:	BSD-Style
 Group:		File tools
 Url:		http://www.pcre.org/
@@ -54,14 +54,20 @@ Patch2:		pcre-8.21-multilib.patch
 # from debian:
 Patch3:		pcre-pcreposix-glibc-conflict.patch
 # from fedora:
-Patch10:     pcre-8.32-refused_spelling_terminated.patch
+Patch10:	pcre-8.32-refused_spelling_terminated.patch
 # Fix recursion stack estimator, upstream bug #2173, refused by upstream
-Patch11:     pcre-8.41-fix_stack_estimator.patch
+Patch11:	pcre-8.41-fix_stack_estimator.patch
+# Fix reading an uninitialized memory when populating a name table,
+# upstream bug #2661, proposed to the upstream
+Patch12:	pcre-8.44-Inicialize-name-table-memory-region.patch
 BuildRequires:	libtool
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(bzip2)
 BuildRequires:	pkgconfig(readline)
 BuildRequires:	pkgconfig(libedit)
+BuildRequires:	bash
+BuildRequires:	diffutils
+BuildRequires:	grep
 
 %description
 PCRE has its own native API, but a set of "wrapper" functions that are based on
@@ -74,8 +80,8 @@ This package contains a grep variant based on the PCRE library.
 %files
 %{_bindir}/pcregrep
 %{_bindir}/pcretest
-%{_mandir}/man1/pcregrep.1*
-%{_mandir}/man1/pcretest.1*
+%doc %{_mandir}/man1/pcregrep.1*
+%doc %{_mandir}/man1/pcretest.1*
 
 #----------------------------------------------------------------------------
 
@@ -87,7 +93,7 @@ Group:		System/Libraries
 This package contains the shared library libpcre.
 
 %files -n %{libname}
-/%{_lib}/libpcre.so.%{pcre_major}*
+%{_libdir}/libpcre.so.%{pcre_major}*
 
 #----------------------------------------------------------------------------
 
@@ -138,7 +144,7 @@ Conflicts:	%{_lib}pcre1 < 8.30-3
 This package contains the shared library libpcreposix.
 
 %files -n %{libnameposix1}
-/%{_lib}/libpcreposix.so.%{pcreposix1_major}*
+%{_libdir}/libpcreposix.so.%{pcreposix1_major}*
 
 #----------------------------------------------------------------------------
 
@@ -178,7 +184,6 @@ existing program that uses the POSIX API, it will have to be renamed or pointed
 at by a link.
 
 %files -n %{devname}
-
 %{_bindir}/pcre-config
 %{_libdir}/lib*.so
 %{_includedir}/*.h
@@ -187,8 +192,8 @@ at by a link.
 %{_libdir}/pkgconfig/libpcrecpp.pc
 %{_libdir}/pkgconfig/libpcre.pc
 %{_libdir}/pkgconfig/libpcreposix.pc
-%{_mandir}/man1/pcre-config.1*
-%{_mandir}/man3/*.3*
+%doc %{_mandir}/man1/pcre-config.1*
+%doc %{_mandir}/man3/*.3*
 
 #----------------------------------------------------------------------------
 
@@ -356,6 +361,7 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
 %patch3 -p1 -b .symbol-conflict
 %patch10 -p1
 %patch11 -p2
+%patch12 -p1
 
 # Because of rpath patch
 libtoolize --copy --force
@@ -397,9 +403,11 @@ for i in $dirs; do
   # The static lib is needed for qemu-static-* targets.
   # Please don't remove it.
   %if %{with pgo}
-    CFLAGS="%{optflags} -fprofile-instr-generate" \
-    CXXFLAGS="%{optflags} -fprofile-instr-generate" \
-    LDFLAGS="%{ldflags} -fprofile-instr-generate" \
+    export LD_LIBRARY_PATH="$(pwd)"
+
+    CFLAGS="%{optflags} -fprofile-generate -mllvm -vp-counters-per-site=64" \
+    CXXFLAGS="%{optflags} -fprofile-generate" \
+    LDFLAGS="%{build_ldflags} -fprofile-generate" \
     %configure \
 	--enable-static \
     %ifarch %{ix86} %{x86_64} %{armx}
@@ -411,21 +419,18 @@ for i in $dirs; do
 	--enable-unicode-properties
     %make_build
 
-    export LLVM_PROFILE_FILE=libpng-%p.profile.d
-    export LD_LIBRARY_PATH="$(pwd)"
-
-    make check
+    make check VERBOSE=yes ||:
 
     unset LD_LIBRARY_PATH
-    unset LLVM_PROFILE_FILE
-    llvm-profdata merge --output=%{name}.profile *.profile.d
-    rm -f *.profile.d
+    llvm-profdata merge --output=%{name}-llvm.profdata $(find . -name "*.profraw" -type f)
+    PROFDATA="$(realpath %{name}-llvm.profdata)"
+    rm -f *.profraw
 
     make clean
 
-    CFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
-    CXXFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
-    LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+    CFLAGS="%{optflags} -fprofile-use=$PROFDATA" \
+    CXXFLAGS="%{optflags} -fprofile-use=$PROFDATA" \
+    LDFLAGS="%{build_ldflags} -fprofile-use=$PROFDATA" \
     %endif
     %configure \
 	--enable-static \
@@ -452,16 +457,11 @@ done
 %endif
 %make_install -C build
 
-install -d %{buildroot}/%{_lib}
-mv %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.* %{buildroot}/%{_lib}
 # strange thing 
 # see https://issues.openmandriva.org/show_bug.cgi?id=389
 %if %{with crosscompile}
-ln -srf %{buildroot}/%{_lib}/libpcre.so.%{pcre_major}.*.* %{buildroot}/%{_lib}/libpcre.so.1
+ln -srf %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.*.* %{buildroot}%{_libdir}/libpcre.so.1
 %endif
-ln -srf %{buildroot}/%{_lib}/libpcre.so.%{pcre_major}.*.* %{buildroot}%{_libdir}/libpcre.so
-mv %{buildroot}%{_libdir}/libpcreposix.so.%{pcreposix1_major}.* %{buildroot}/%{_lib}
-ln -srf %{buildroot}/%{_lib}/libpcreposix.so.%{pcreposix1_major}.*.* %{buildroot}%{_libdir}/libpcreposix.so
 
 # Remove unwanted files
 rm -rf %{buildroot}%{_docdir}/pcre*
@@ -473,4 +473,4 @@ export LC_ALL=C
 #%{__cc} -xc - -include "pcre_internal.h" -I. -o study_size
 #STUDY_SIZE=`./study_size`
 #perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
-make check -C build
+make check VERBOSE=yes -C build
