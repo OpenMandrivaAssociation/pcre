@@ -5,6 +5,12 @@
 %bcond_with compat32
 %endif
 
+%if %{cross_compiling}
+# Workaround for configure script looking for bogus
+# profiling version of compiler-rt
+%define prefer_gcc 1
+%endif
+
 %define pcre_major 1
 %define pcre16_major 0
 %define pcre32_major 0
@@ -31,8 +37,11 @@
 %define sdev32name libpcre-static-devel
 
 %define build_pcreposix_compat 1
-%bcond_with crosscompile
+%if %{cross_compiling}
+%bcond_with pgo
+%else
 %bcond_without pgo
+%endif
 
 %ifnarch %{ix86}
 # (tpg) optimize it a bit
@@ -459,13 +468,14 @@ done
 
 # strange thing 
 # see https://issues.openmandriva.org/show_bug.cgi?id=389
-%if %{with crosscompile}
+%if %{cross_compiling}
 ln -srf %{buildroot}%{_libdir}/libpcre.so.%{pcre_major}.*.* %{buildroot}%{_libdir}/libpcre.so.1
 %endif
 
 # Remove unwanted files
 rm -rf %{buildroot}%{_docdir}/pcre*
 
+%if ! %{cross_compiling}
 %check
 export LC_ALL=C
 # Tests, patch out actual pcre_study_size in expected results
@@ -474,3 +484,4 @@ export LC_ALL=C
 #STUDY_SIZE=`./study_size`
 #perl -pi -e "s,(Study size\s+=\s+)\d+,\${1}$STUDY_SIZE," testdata/testoutput*
 make check VERBOSE=yes -C build
+%endif
