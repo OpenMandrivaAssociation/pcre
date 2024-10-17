@@ -54,7 +54,7 @@ Version:	8.45
 Release:	3
 License:	BSD-Style
 Group:		File tools
-Url:		http://www.pcre.org/
+Url:		https://www.pcre.org/
 Source0:	https://ftp.pcre.org/pub/pcre/%{name}-%{version}.tar.bz2
 Source1:	pcre.rpmlintrc
 Patch0:		pcre-0.6.5-fix-detect-into-kdelibs.patch
