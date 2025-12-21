@@ -69,6 +69,7 @@ Patch11:	pcre-8.41-fix_stack_estimator.patch
 # Fix reading an uninitialized memory when populating a name table,
 # upstream bug #2661, proposed to the upstream
 Patch12:	pcre-8.44-Inicialize-name-table-memory-region.patch
+BuildRequires:	make
 BuildRequires:	libtool
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(bzip2)
