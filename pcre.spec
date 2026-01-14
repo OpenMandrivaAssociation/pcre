@@ -70,7 +70,7 @@ Patch11:	pcre-8.41-fix_stack_estimator.patch
 # upstream bug #2661, proposed to the upstream
 Patch12:	pcre-8.44-Inicialize-name-table-memory-region.patch
 BuildRequires:	make
-BuildRequires:	libtool
+BuildRequires:	slibtool
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(bzip2)
 BuildRequires:	pkgconfig(readline)
@@ -356,9 +356,9 @@ Documentation for %{name}.
 
 %prep
 %setup -q
-%patch0 -p1 -b .detect_into_kdelibs
-%patch1 -p1
-%patch2 -p1
+%patch 0 -p1 -b .detect_into_kdelibs
+%patch 1 -p1
+%patch 2 -p1
 
 # bork
 sed -i -e "s|ln -s|ln -snf|g" Makefile.am
@@ -368,13 +368,13 @@ sed -i -e "s|ln -s|ln -snf|g" Makefile.am
   # create a libpcreposix.so.0 without the patch
   cp -a . ../pcre-with-pcreposix_compat && mv ../pcre-with-pcreposix_compat .
 %endif
-%patch3 -p1 -b .symbol-conflict
-%patch10 -p1
-%patch11 -p2
-%patch12 -p1
+%patch 3 -p1 -b .symbol-conflict
+%patch 10 -p1
+%patch 11 -p2
+%patch 12 -p1
 
 # Because of rpath patch
-libtoolize --copy --force
+slibtoolize --copy --force
 
 %build
 %if %{build_pcreposix_compat}
