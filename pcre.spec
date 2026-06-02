@@ -51,7 +51,7 @@
 Summary:	Perl-compatible regular expression library
 Name:		pcre
 Version:	8.45
-Release:	3
+Release:	4
 License:	BSD-Style
 Group:		File tools
 Url:		https://www.pcre.org/
@@ -70,6 +70,7 @@ Patch11:	pcre-8.41-fix_stack_estimator.patch
 # upstream bug #2661, proposed to the upstream
 Patch12:	pcre-8.44-Inicialize-name-table-memory-region.patch
 BuildRequires:	make
+BuildRequires:	autoconf
 BuildRequires:	slibtool
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(bzip2)
