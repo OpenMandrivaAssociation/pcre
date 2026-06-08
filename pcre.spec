@@ -71,6 +71,7 @@ Patch11:	pcre-8.41-fix_stack_estimator.patch
 Patch12:	pcre-8.44-Inicialize-name-table-memory-region.patch
 BuildRequires:	make
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	slibtool
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(bzip2)
